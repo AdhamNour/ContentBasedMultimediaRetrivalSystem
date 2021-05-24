@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import './SearchScreen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -13,18 +13,20 @@ class HomeScreen extends StatelessWidget {
       body: Center(
         child: Row(
           children: [
-            ElevatedButton(
+            ElevatedButton.icon(
                 onPressed: () => {
                       Navigator.of(context)
                           .pushNamed(SearchScreen.routeName, arguments: 'Video')
                     },
-                child: Text('Video')),
-            TextButton(
+                icon: FaIcon(FontAwesomeIcons.video),
+                label: Text('Video')),
+            TextButton.icon(
                 onPressed: () => {
                       Navigator.of(context)
                           .pushNamed(SearchScreen.routeName, arguments: 'Image')
                     },
-                child: Text('Image'))
+                icon: FaIcon(FontAwesomeIcons.image),
+                label: Text('Image'))
           ],
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         ),
