@@ -14,6 +14,7 @@ class SearchComponent extends StatelessWidget {
             child: Container(
               child: Row(
                 children: [
+                  //checkboxes in images only
                   Expanded(
                     child: TextField(
                       decoration: InputDecoration(
@@ -28,6 +29,7 @@ class SearchComponent extends StatelessWidget {
             ),
           ),
           Padding(
+            //Add Camera Button
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton.icon(
                 onPressed: () => {},
