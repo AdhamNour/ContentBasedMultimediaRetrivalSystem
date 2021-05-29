@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 import '../providers/ResultProvider.dart';
 
@@ -19,10 +22,28 @@ class _SearchComponentState extends State<SearchComponent> {
     'GaborFilter': true,
     'RESNET': false
   };
+
+  void searchRequest(ResultsProvider resultProvider, {String? url}) {
+    http.post(Uri.parse('http://192.168.1.9:5000/${widget.searchType}'), body: {
+      'link': url,
+      'retreival_algorithms': jsonEncode(algorithms)
+    }).then((value) {
+      var x = jsonDecode(value.body)['result_links'];
+      List<String> xx = [];
+      for (int i = 0; i < x.length; i++) {
+        // print(x[i]['link']);
+
+        xx.add(x[i].toString());
+      }
+      resultProvider.results = xx;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    var screenSize = MediaQuery.of(context).size;
+    final screenSize = MediaQuery.of(context).size;
     final resultProvider = Provider.of<ResultsProvider>(context);
+    final urlController = TextEditingController();
     return Card(
       child: Column(
         children: [
@@ -37,15 +58,13 @@ class _SearchComponentState extends State<SearchComponent> {
                       decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           hintText: '${widget.searchType} URL'),
+                      controller: urlController,
                     ),
                   ),
                   IconButton(
-                      onPressed: () => {
-                            resultProvider.results = [
-                              'https://youtu.be/mTCESSzPZSw'
-                            ]
-                            //TODO: fix this to send http request instead
-                          },
+                      onPressed: () {
+                        searchRequest(resultProvider, url: urlController.text);
+                      },
                       icon: FaIcon(FontAwesomeIcons.search))
                 ],
               ),
@@ -69,10 +88,8 @@ class _SearchComponentState extends State<SearchComponent> {
                       .map((e) => CheckboxListTile(
                           value: algorithms[e],
                           onChanged: (newVal) {
-                            resultProvider.results = [
-                              ...resultProvider.results,
-                              'https://images5.alphacoders.com/903/903845.png'
-                            ]; //TODO: fix it with sending an HTTP request to server
+                            searchRequest(resultProvider,
+                                url: urlController.text);
                             setState(() {
                               if (newVal != null) {
                                 algorithms[e] = newVal ? true : false;

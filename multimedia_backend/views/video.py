@@ -5,4 +5,4 @@ class Video(Resource):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('link')
     def post(self):
-        return {"yourlink": retrive_Video(self.reqparse.parse_args()['link'])}
+        return {"result_links": retrive_Video(self.reqparse.parse_args()['link'])}

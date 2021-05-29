@@ -21,7 +21,7 @@ class SearchResultItem extends StatelessWidget {
                     placeholder: (context, url) => CircularProgressIndicator(),
                     errorWidget: (context, url, error) => Icon(Icons.error),
                   )
-                : SearchResultItemVideoPresenter(url: url,),
+                : SearchResultItemVideoPresenter(url: url),
           ],
         ),
       )),
