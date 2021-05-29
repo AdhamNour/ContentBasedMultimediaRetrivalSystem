@@ -33,6 +33,7 @@ dependencies:
   cached_network_image: ^3.0.0
   youtube_player_flutter: ^8.0.0
   http: ^0.13.3
+  provider: ^5.0.0
 
 dev_dependencies:
   flutter_test:

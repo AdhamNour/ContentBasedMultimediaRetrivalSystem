@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/ResultProvider.dart';
 
 class SearchComponent extends StatefulWidget {
   final String searchType;
@@ -10,10 +13,16 @@ class SearchComponent extends StatefulWidget {
 }
 
 class _SearchComponentState extends State<SearchComponent> {
-  var algorithms = {'Histogram': false, 'Text': true};
+  var algorithms = {
+    'Histogram': false,
+    'Text': true,
+    'GaborFilter': true,
+    'RESNET': false
+  };
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
+    final resultProvider = Provider.of<ResultsProvider>(context);
     return Card(
       child: Column(
         children: [
@@ -31,7 +40,12 @@ class _SearchComponentState extends State<SearchComponent> {
                     ),
                   ),
                   IconButton(
-                      onPressed: () => {},
+                      onPressed: () => {
+                            resultProvider.results = [
+                              'https://youtu.be/mTCESSzPZSw'
+                            ]
+                            //TODO: fix this to send http request instead
+                          },
                       icon: FaIcon(FontAwesomeIcons.search))
                 ],
               ),
@@ -55,6 +69,10 @@ class _SearchComponentState extends State<SearchComponent> {
                       .map((e) => CheckboxListTile(
                           value: algorithms[e],
                           onChanged: (newVal) {
+                            resultProvider.results = [
+                              ...resultProvider.results,
+                              'https://images5.alphacoders.com/903/903845.png'
+                            ]; //TODO: fix it with sending an HTTP request to server
                             setState(() {
                               if (newVal != null) {
                                 algorithms[e] = newVal ? true : false;
@@ -64,7 +82,7 @@ class _SearchComponentState extends State<SearchComponent> {
                           title: Text(e)))
                       .toList(),
                 ),
-                height: screenSize.height*0.15,
+                height: screenSize.height * 0.185,
               ),
             )
         ],

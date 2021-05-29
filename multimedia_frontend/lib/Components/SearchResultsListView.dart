@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:multimedia_frontend/Components/SearchResultItem.dart';
+import 'package:multimedia_frontend/providers/ResultProvider.dart';
+import 'package:provider/provider.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class SearchResultsListView extends StatelessWidget {
@@ -8,22 +10,17 @@ class SearchResultsListView extends StatelessWidget {
   SearchResultsListView({this.searchType});
   @override
   Widget build(BuildContext context) {
-    YoutubePlayerController _controller = YoutubePlayerController(
-      initialVideoId: YoutubePlayer.convertUrlToId(
-              'https://youtu.be/E_q9maUnWes?list=PLaUMIRsX73gLp_2JqaB51MICkUfsHsdEi')
-          .toString(),
-      flags: YoutubePlayerFlags(
-        autoPlay: false,
-        mute: true,
-      ),
-    );
-    return Container(
-        child: ListView.builder(
-      itemBuilder: (_, index) => SearchResultItem(
-        searchType: searchType,
-        index: index,
-      ),
-      itemCount: 10,
-    ));
+    final resultProvider = Provider.of<ResultsProvider>(context).results;
+    return resultProvider.length > 0
+        ? ListView.builder(
+            itemBuilder: (_, index) => SearchResultItem(
+              searchType: searchType,
+              index: index,url: resultProvider[index],
+            ),
+            itemCount: resultProvider.length,
+          )
+        : Center(
+            child: Text('search it'),
+          );
   }
 }
