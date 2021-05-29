@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:multimedia_frontend/Components/SearchResultItem.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class SearchResultsListView extends StatelessWidget {
@@ -18,26 +19,9 @@ class SearchResultsListView extends StatelessWidget {
     );
     return Container(
         child: ListView.builder(
-      itemBuilder: (_, index) => Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Card(
-            child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Text('result #${index + 1}'),
-              searchType == 'Image'
-                  ? CachedNetworkImage(
-                      imageUrl:
-                          "https://images6.alphacoders.com/345/thumb-1920-345153.jpg",
-                      placeholder: (context, url) =>
-                          CircularProgressIndicator(),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                    )
-                  : YoutubePlayer(controller: _controller),
-            ],
-          ),
-        )),
+      itemBuilder: (_, index) => SearchResultItem(
+        searchType: searchType,
+        index: index,
       ),
       itemCount: 10,
     ));
