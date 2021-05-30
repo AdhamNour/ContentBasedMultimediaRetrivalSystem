@@ -94,37 +94,31 @@ def image_comapare_mean (image_path , mean_color_in_db):
 # khald section (3) , (4) 
 
 class DeepLearning(object):
-	"""docstring for DeepLearning"""
-	def __init__(self):
-		super(DeepLearning, self).__init__()
-		self.model = ResNet152(weights='imagenet')
+    """docstring for DeepLearning"""
+    def __init__(self):
+        super(DeepLearning, self).__init__()
+        self.model = ResNet152(weights='imagenet')
 
-	def predict_image(self,image):
-		if image.shape != (224,224,3):
-			image =  cv2.resize(image, dsize=(224, 224), interpolation=cv2.INTER_CUBIC)
-			print(image.shape)		
+    def predict_image(self,image):
+        if image.shape != (224,224,3):
+            image =  cv2.resize(image, dsize=(224, 224), interpolation=cv2.INTER_CUBIC)
+            print(image.shape)      
 
-		# convert the image pixels to a numpy array
-		image = img_to_array(image)
-		# reshape data for the model
-		image = np.expand_dims(image, axis=0)
-		# prepare the image for the VGG model
-		image = preprocess_input(image)
-		# predict the probability across all output classes
-		yhat = self.model.predict(image)
-		# convert the probabilities to class labels
-		label = decode_predictions(yhat)
+        # convert the image pixels to a numpy array
+        image = img_to_array(image)
+        # reshape data for the model
+        image = np.expand_dims(image, axis=0)
+        # prepare the image for the VGG model
+        image = preprocess_input(image)
+        # predict the probability across all output classes
+        yhat = self.model.predict(image)
+        # convert the probabilities to class labels
+        label = decode_predictions(yhat)
 
-		label_name =label[0][0][1]
-		label_percentage =label[0][0][2]*100
+        label_name =label[0][0][1]
+        label_percentage =label[0][0][2]*100
 
-		return label_name,label_percentage
-
-model = DeepLearning()
-img = cv2.imread('test.png')
-img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-out = model.predict_image(img)
-print(out)
+        return label_name,label_percentage
 
 
 class Gabor(object):
@@ -181,6 +175,13 @@ class Gabor(object):
   
     return hist
   
+  def compareHist(self,image1,image2):
+    
+    hist1 =self.gabor_histogram(image1)
+    hist2 =self.gabor_histogram(image2)
+
+    return cv2.compareHist(hist1, hist2, cv2.HISTCMP_CORREL )
+
   def _gabor(self, image, kernels):
     accum = np.zeros_like(image)
     for kern in kernels:
@@ -192,29 +193,14 @@ class Gabor(object):
 # how to use it  
 if __name__ == "__main__":
   G = Gabor()
-  img = cv2.imread('HP_train.jpg')
+  img = cv2.imread('test.png')
   img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+  img2 = cv2.imread('test2.png')
+  img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2RGB)
+
   hist = G.gabor_histogram(img)
+  print(G.compareHist(img,img2))
   plt.plot(hist)
   plt.show()
-
-
-
-
-
-
-
-#test = "hema king how dow low"
-
-#test2 = test.split(sep= " " )
-
-#print(test , test2)
-#counter = 0
-#for i in test2 : 
-    #Rank = i in test
-    #if (Rank == True):
-       # counter += 1
-
-#print(counter)
-#print(Rank)
 
