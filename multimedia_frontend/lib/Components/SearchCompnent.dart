@@ -24,7 +24,6 @@ class _SearchComponentState extends State<SearchComponent> {
   };
 
   void searchRequest(ResultsProvider resultProvider, {String? url}) {
-    print('[AdhamNour/searchRequest]${url}');
     http.post(Uri.parse('http://192.168.1.9:5000/${widget.searchType}'), body: {
       'link': url,
       'retreival_algorithms': jsonEncode(algorithms)

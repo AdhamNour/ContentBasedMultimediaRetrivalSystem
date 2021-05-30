@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import './SearchScreen.dart';
@@ -11,24 +14,74 @@ class HomeScreen extends StatelessWidget {
         title: Text('Contest Based Multimedia Retrival systems'),
       ),
       body: Center(
-        child: Row(
+        child: Column(
           children: [
-            ElevatedButton.icon(
-                onPressed: () => {
-                      Navigator.of(context)
-                          .pushNamed(SearchScreen.routeName, arguments: 'Video')
+            Row(
+              children: [
+                ElevatedButton.icon(
+                    onPressed: () => {
+                          Navigator.of(context).pushNamed(
+                              SearchScreen.routeName,
+                              arguments: 'Video')
+                        },
+                    icon: FaIcon(FontAwesomeIcons.video),
+                    label: Text('Video')),
+                TextButton.icon(
+                    onPressed: () => {
+                          Navigator.of(context).pushNamed(
+                              SearchScreen.routeName,
+                              arguments: 'Image')
+                        },
+                    icon: FaIcon(FontAwesomeIcons.image),
+                    label: Text('Image'))
+              ],
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            ),
+            Row(
+              children: [
+                TextButton.icon(
+                    onPressed: () async {
+                      FilePickerResult? result =
+                          await FilePicker.platform.pickFiles();
+                      if (result != null) {
+                        File file = File(result.files.single.path.toString());
+                      } else {
+                        // User canceled the picker
+                        showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                                  title: Text("Selection Canceled"),
+                                  content: Text(
+                                      "You have canceled the file selection"),
+                                ));
+                      }
                     },
-                icon: FaIcon(FontAwesomeIcons.video),
-                label: Text('Video')),
-            TextButton.icon(
-                onPressed: () => {
-                      Navigator.of(context)
-                          .pushNamed(SearchScreen.routeName, arguments: 'Image')
+                    icon: FaIcon(FontAwesomeIcons.fileVideo),
+                    label: Text('Upload Video')),
+                ElevatedButton.icon(
+                    onPressed: () async {
+                      FilePickerResult? result =
+                          await FilePicker.platform.pickFiles();
+                      if (result != null) {
+                        File file = File(result.files.single.path.toString());
+                      } else {
+                        // User canceled the picker
+                        showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                                  title: Text("Selection Canceled"),
+                                  content: Text(
+                                      "You have canceled the file selection"),
+                                ));
+                      }
                     },
-                icon: FaIcon(FontAwesomeIcons.image),
-                label: Text('Image'))
+                    icon: FaIcon(FontAwesomeIcons.images),
+                    label: Text('Upload Image')),
+              ],
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            )
           ],
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisSize: MainAxisSize.min,
         ),
       ),
     );
