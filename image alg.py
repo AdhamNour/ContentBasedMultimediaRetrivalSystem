@@ -9,6 +9,7 @@ from keras.preprocessing.image import load_img
 from keras.preprocessing.image import img_to_array
 from keras.applications.resnet import preprocess_input ,decode_predictions
 from keras.applications.resnet import ResNet152
+from numpy.lib.utils import source
 from skimage.filters import gabor_kernel
 from skimage import color
 import scipy.ndimage as ndi
@@ -16,29 +17,42 @@ from multiprocessing.pool import ThreadPool
 
 # first fun to get histogeam from image Input : image , Output : histogram   (1)
 def Get_image_histogram(image_path):
-    image = mpimg.imread(image_path)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    hist = cv2.calcHist([image],[0],None,[256],[0,256])
+    hist = []
+    image = mpimg.imread(image_path,cv2.IMREAD_COLOR)
+    #image = cv2.cvtColor(image)
+    for i in range(3):
+      hist.append(cv2.calcHist([image],[i],None,[256],[0,256]))
     #plt.hist(image.ravel(),255,[0,256])
     return hist
 
 # second fun to get different histogram input 2 image path , output : value of  similarity 
 def compare_image_histgram(image_path1 , image_path2 , type_of_compare):
+    scoure = 0
+    diffs = []
      # return number from 0 to 1 
     if (type_of_compare == "CORREL" or type_of_compare == "correl"):
         compare_method = cv2.HISTCMP_CORREL
     # return number from 0 to 1 inversive    
     elif (type_of_compare == "distance" or type_of_compare == "DISTANCE"):
        compare_method = cv2.HISTCMP_BHATTACHARYYA
+    diffs.append(cv2.compareHist(Get_image_histogram(image_path1)[0],Get_image_histogram(image_path2)[0],compare_method))
+    diffs.append(cv2.compareHist(Get_image_histogram(image_path1)[1],Get_image_histogram(image_path2)[1],compare_method))
+    diffs.append(cv2.compareHist(Get_image_histogram(image_path1)[2],Get_image_histogram(image_path2)[3],compare_method))
+    for diff in diffs :
+      if (compare_method == cv2.HISTCMP_CORREL):
+          if diff * 100 > 20 :
+            scoure += 1
 
-    diff = cv2.compareHist(Get_image_histogram(image_path1),Get_image_histogram(image_path2),compare_method)
-    if (compare_method == cv2.HISTCMP_CORREL):
-        diff = diff * 100
-    elif (compare_method == cv2.HISTCMP_BHATTACHARYYA):
-        diff =  diff * 100
-        diff = 100 - diff
-    print(diff)
-    return diff
+      elif (compare_method == cv2.HISTCMP_BHATTACHARYYA):
+          diff =  diff * 100
+          diff = 100 - diff
+          if diff  > 20 :
+            scoure += 1
+      #print(diff)
+    if scoure > 2 :
+      return image_path2
+    scoure = 0
+
 
 # function get string and return how many words are similarity 
 def comapare_image_text(string_input , string_database):
@@ -55,8 +69,17 @@ def comapare_image_text(string_input , string_database):
 # function get image path , output : mean color of rgb  (2)
 def Get_image_mean_color (image_path) :
     image = mpimg.imread(image_path,cv2.IMREAD_COLOR)
-    channels = cv2.mean(image)
-    observation = np.array([(channels[2], channels[1], channels[0])])
+    #channels = cv2.mean(image)
+    #observation = np.array([(channels[2], channels[1], channels[0])])
+    #same as mean
+    red_channel = image[:,:,2]
+    green_channel = image[:,:,1]
+    blue_channel = image[:,:,0]
+    img_size = len(image[:,0]) * len(image[0,:])
+    R_mean = sum(map(sum , red_channel)) / img_size 
+    B_mean = sum(map(sum , blue_channel)) / img_size 
+    G_mean = sum(map(sum , green_channel)) / img_size 
+    observation = [R_mean, G_mean, B_mean]
     return observation
 
 # function input  image path , mean color in database , output : average of color in image  
@@ -64,7 +87,7 @@ def image_comapare_mean (image_path , mean_color_in_db):
     diff = []
     similar = Get_image_mean_color(image_path)
     for i in range(3):
-        diff[i] = similar[i] - mean_color_in_db[i]
+        diff[i] = abs(similar[i] - mean_color_in_db[i])
     average = sum(diff) / 3 
     return average  
 
