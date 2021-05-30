@@ -7,6 +7,47 @@ import './SearchScreen.dart';
 
 class HomeScreen extends StatelessWidget {
   static const String routeName = "home";
+
+  void showSummary(FilePickerResult? result, BuildContext context) {
+    if (result != null) {
+      File file = File(result.files.single.path.toString());
+      showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: Text("Confirm Image"),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [Text('you have selected'), Image.file(file)],
+                ),
+                actions: [
+                  TextButton.icon(
+                      onPressed: () {
+                        Navigator.of(context).pop('ok');
+                      },
+                      icon: Icon(Icons.thumb_up),
+                      label: Text('Okay'))
+                ],
+              )).then((value) {
+        if (value != 'ok') {
+          showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                    title: Text("Selection Canceled"),
+                    content: Text("You have canceled the file selection"),
+                  ));
+        }
+      });
+    } else {
+      // User canceled the picker
+      showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: Text("Selection Canceled"),
+                content: Text("You have canceled the file selection"),
+              ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,18 +84,7 @@ class HomeScreen extends StatelessWidget {
                     onPressed: () async {
                       FilePickerResult? result =
                           await FilePicker.platform.pickFiles();
-                      if (result != null) {
-                        File file = File(result.files.single.path.toString());
-                      } else {
-                        // User canceled the picker
-                        showDialog(
-                            context: context,
-                            builder: (ctx) => AlertDialog(
-                                  title: Text("Selection Canceled"),
-                                  content: Text(
-                                      "You have canceled the file selection"),
-                                ));
-                      }
+                      showSummary(result, context);
                     },
                     icon: FaIcon(FontAwesomeIcons.fileVideo),
                     label: Text('Upload Video')),
@@ -62,18 +92,7 @@ class HomeScreen extends StatelessWidget {
                     onPressed: () async {
                       FilePickerResult? result =
                           await FilePicker.platform.pickFiles();
-                      if (result != null) {
-                        File file = File(result.files.single.path.toString());
-                      } else {
-                        // User canceled the picker
-                        showDialog(
-                            context: context,
-                            builder: (ctx) => AlertDialog(
-                                  title: Text("Selection Canceled"),
-                                  content: Text(
-                                      "You have canceled the file selection"),
-                                ));
-                      }
+                      showSummary(result, context);
                     },
                     icon: FaIcon(FontAwesomeIcons.images),
                     label: Text('Upload Image')),
