@@ -1,6 +1,4 @@
 from models.config import db
-from sqlalchemy import Column, String, Integer, Date, ForeignKey
-from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -9,16 +7,22 @@ Base = declarative_base()
 class ImageClass(db.Model, Base):
     __tablename__ = 'image'
     image_id = db.Column(db.Integer, primary_key=True)
-    url = db.Column(db.String(50))
+    url = db.Column(db.String(70))
     percent = db.Column(db.Float)
-    author = db.Column(db.String(50))
+    author = db.Column(db.String(80))
     histogram = db.Column(db.Float)
     mean = db.Column(db.Float)
-    description = db.Column(db.String(50))
+    description = db.Column(db.String(2000))
 
     def serialize(self):
         return {
-
+            "image_id":self.image_id,
+            "url":self.url,
+            "percent":self.percent,
+            "author":self.author,
+            "histogram":self.histogram,
+            "mean":self.mean,
+            "description":self.description
         }
 
     def insert(self):
