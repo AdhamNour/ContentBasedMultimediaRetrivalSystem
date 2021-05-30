@@ -1,5 +1,5 @@
 import requests
-path="/media/dj/DJ/Senior College/2nd Term/Multimedia/Project/ContentBasedMultimediaRetrivalSystem/multimedia_backend/static/"
+path="D:\Projects\MultimediaProject\static"
 
 def retrive_Image(imageUrl):
     retrived_videos =[]

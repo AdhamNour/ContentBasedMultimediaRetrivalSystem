@@ -4,8 +4,8 @@ class Image(Resource):
     
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('link', type=str, location='json')
-        self.reqparse.add_argument('retreival_algorithms', type=str, location='json')
+        self.reqparse.add_argument('link')
+        self.reqparse.add_argument('retreival_algorithms')
     
     def post(self):
         print(self.reqparse.parse_args())

@@ -16,7 +16,7 @@ setup_db(app)
 
 def app_setup(app):
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:19702099@localhost/multimedia"
+    app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:123456@localhost/multimedia"
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
     app.config['STATIC_PATH'] = "/media/dj/DJ/Senior College/2nd Term/Multimedia/Project/ContentBasedMultimediaRetrivalSystem/multimedia_backend/static"
     #app.config['ALLOWED_EXTENSIONS'] = ['jpg', 'jpeg', 'png']
