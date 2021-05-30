@@ -8,8 +8,8 @@ class ImageClass(db.Model, Base):
     __tablename__ = 'image'
     image_id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(70))
-    url = db.Column(db.String(70))
-    offline_location = db.Column(db.String(70))
+    url = db.Column(db.String(2000))
+    offline_location = db.Column(db.String(2000))
     percent = db.Column(db.Float)
     object_in_pic = db.Column(db.String(70)) 
     author = db.Column(db.String(80))
