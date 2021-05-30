@@ -2,7 +2,7 @@ from flask import Flask
 from flask_restful import Resource,Api,reqparse
 
 from views.video import Video
-from views.image import Image
+from views.image import *
 
 from models.config import app_setup
 from models.image import ImageClass
@@ -14,9 +14,11 @@ app_setup(app)
 app.app_context().push()
 
 api.add_resource(Video,'/Video')
-api.add_resource(Image,'/Image')
-app_setup(app)
-app.app_context().push()
+api.add_resource(ImageSearch,'/Image')
+api.add_resource(ImageUpload,'/uploadImage')
 
+# app_setup(app)
+# app.app_context().push()
+from models.config import host
 if __name__ == '__main__':
-    app.run(debug=True, host="192.168.1.9")
+    app.run(debug=True, host=host)
