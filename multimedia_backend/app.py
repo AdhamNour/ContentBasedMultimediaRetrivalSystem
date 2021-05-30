@@ -6,6 +6,7 @@ from views.image import Image
 
 from models.config import app_setup
 from models.image import ImageClass
+from models.video import VideoClass
 
 app = Flask(__name__)
 api = Api(app)

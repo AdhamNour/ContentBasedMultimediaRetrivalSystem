@@ -1,26 +1,28 @@
 from models.config import db
-from sqlalchemy import Column, String, Integer, Date, ForeignKey
-from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
 
-class Image(db.Model, Base):
-    __tablename__ = 'image'
-    image_id = db.Column(db.Integer,primary_key=True)
-    url=db.Column(db.String)
-    percent=db.Column(db.Float)
-    author=db.Column(db.String)
-    histogram=db.Column(db.Float)
-    mean=db.Column(db.Float)
-    description=db.Column(db.String)
-    
+class VideoClass(db.Model, Base):
+    __tablename__ = 'video'
+    video_id = db.Column(db.Integer, primary_key=True)
+    url = db.Column(db.String(70))
+    percent = db.Column(db.Float)
+    author = db.Column(db.String(80))
+    histogram = db.Column(db.Float)
+    mean = db.Column(db.Float)
+    description = db.Column(db.String(2000))
 
     def serialize(self):
         return {
-            'id': self.user_id,
-            'degree': self.scientific_degree,
+            "video_id":self.video_id,
+            "url":self.url,
+            "percent":self.percent,
+            "author":self.author,
+            "histogram":self.histogram,
+            "mean":self.mean,
+            "description":self.description
         }
 
     def insert(self):
