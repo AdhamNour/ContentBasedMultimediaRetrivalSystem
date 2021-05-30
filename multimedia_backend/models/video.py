@@ -8,21 +8,21 @@ class VideoClass(db.Model, Base):
     __tablename__ = 'video'
     video_id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String(70))
-    percent = db.Column(db.Float)
     author = db.Column(db.String(80))
-    histogram = db.Column(db.Float)
-    mean = db.Column(db.Float)
     description = db.Column(db.String(2000))
+    no_of_keyframes = db.Column(db.Integer)
+    tags = db.Column(db.String(2000))
+    length = db.Column(db.Integer)
 
     def serialize(self):
         return {
-            "video_id":self.video_id,
-            "url":self.url,
-            "percent":self.percent,
-            "author":self.author,
-            "histogram":self.histogram,
-            "mean":self.mean,
-            "description":self.description
+            "video_id": self.video_id,
+            "url": self.url,
+            "author": self.author,
+            "description": self.description,
+            "no_of_keyframes": self.no_of_keyframes,
+            "tags": self.tags,
+            "length": self.length
         }
 
     def insert(self):

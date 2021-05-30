@@ -9,6 +9,7 @@ class ImageClass(db.Model, Base):
     image_id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String(70))
     percent = db.Column(db.Float)
+    object_in_pic = db.Column(db.String(70)) 
     author = db.Column(db.String(80))
     histogram = db.Column(db.Float)
     mean = db.Column(db.Float)
@@ -19,6 +20,7 @@ class ImageClass(db.Model, Base):
             "image_id":self.image_id,
             "url":self.url,
             "percent":self.percent,
+            "Object": self.object_in_pic,
             "author":self.author,
             "histogram":self.histogram,
             "mean":self.mean,
