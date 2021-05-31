@@ -98,11 +98,11 @@ def compare_image_histgram(image_path1, image_path2, type_of_compare='correl'):
     elif (type_of_compare == "distance" or type_of_compare == "DISTANCE"):
         compare_method = cv2.HISTCMP_BHATTACHARYYA
     diffs.append(cv2.compareHist(Get_image_histogram(image_path1)[
-                 0], image_path2[0], compare_method))
+                 0], Get_image_histogram(image_path2)[0], compare_method))
     diffs.append(cv2.compareHist(Get_image_histogram(image_path1)[
-                 1], image_path2[1], compare_method))
+                 1], Get_image_histogram(image_path2)[1], compare_method))
     diffs.append(cv2.compareHist(Get_image_histogram(image_path1)[
-                 2], image_path2[2], compare_method))
+                 2], Get_image_histogram(image_path2)[2], compare_method))
     print(diffs)
     for diff in diffs:
         if (compare_method == cv2.HISTCMP_CORREL):
@@ -118,7 +118,8 @@ def compare_image_histgram(image_path1, image_path2, type_of_compare='correl'):
     print(scoure)
     if scoure > 2:
         return image_path2
-    scoure = 0
+    else:
+        return None
 
 
 # function get string and return how many words are similarity

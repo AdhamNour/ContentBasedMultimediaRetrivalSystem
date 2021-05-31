@@ -8,12 +8,14 @@ class VideoClass(db.Model, Base):
     __tablename__ = 'video'
     video_id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String(70))
+    title = db.Column(db.String(80))
     author = db.Column(db.String(80))
     description = db.Column(db.String(2000))
     no_of_keyframes = db.Column(db.Integer)
     tags = db.Column(db.String(2000))
     length = db.Column(db.Integer)
     offline_location = db.Column(db.String(2000))
+    keyFrame_location = db.Column(db.String(2000))
 
     def serialize(self):
         return {

@@ -23,8 +23,8 @@ def retrive_Image(imageUrl):
     for alg in ['Histogram','Mean','GaborFilter','RESNET']:    
         if algorithms[alg]:
             for i in images:
-                # Image_in_db = Load_from_Local(i[0])
-                if alg=='Histogram' and compare_image_histgram(Image_to_compare, HistoDeSerial(i[4])) is not None:
+                Image_in_db = Load_from_Local(i[0])
+                if alg=='Histogram' and compare_image_histgram(Image_to_compare, Image_in_db) is not None:
                     retrieved_images.append(i[2])
                 elif alg=='Mean' and image_comapare_mean(Image_to_compare, MeanDeSerial(i[3]))<=50:
                     retrieved_images.append(i[2])
@@ -62,7 +62,7 @@ def save_image(Image):
         DL = DeepLearning()
         object_in_image, percent = DL.predict_image(imageLoad(im))
         Image['object_in_pic'] = object_in_image
-        print(type(float(percent)), float(percent))
+        print(object_in_image, float(percent))
         Image['percent'] = float(percent)
         # Forth: Get the Gabor
         G = Gabor()
