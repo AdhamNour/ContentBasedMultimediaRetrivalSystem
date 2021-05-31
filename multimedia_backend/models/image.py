@@ -25,7 +25,7 @@ class ImageClass(db.Model, Base):
             "url":self.url,
             "offline_location": self.offline_location,
             "percent":self.percent,
-            "Object": self.object_in_pic,
+            "object_in_pic": self.object_in_pic,
             "author":self.author,
             "histogram":self.histogram,
             "mean":self.mean,

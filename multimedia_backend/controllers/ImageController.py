@@ -12,7 +12,8 @@ path="/media/dj/DJ/Senior College/2nd Term/Multimedia/Project/ContentBasedMultim
 def retrive_Image(imageUrl):
     #get all images
     All_Images = ImageClass.query.with_entities(ImageClass.offline_location,ImageClass.image_id,\
-        ImageClass.url, ImageClass.mean, ImageClass.histogram, ImageClass.gabor)
+        ImageClass.url, ImageClass.mean, ImageClass.histogram, ImageClass.gabor,\
+            ImageClass.object_in_pic, ImageClass.percent)
     images = [image for image in All_Images]  
     retrieved_images =[] 
     save_image({"url":imageUrl['link'], "title":"Untitled"})
@@ -30,6 +31,11 @@ def retrive_Image(imageUrl):
                 elif alg=='GaborFilter' and Gabor_Method(Image_to_compare, GaborDeSerial(i[5]))>=50:
                     retrieved_images.append(i[2])
                 # TODO: Integrate the RESNET
+                elif alg=='RESNET':
+                    DL = DeepLearning()
+                    object_in_pic, percent = DL.predict_image(Image_to_compare)
+                    if object_in_pic==i[6] and abs(percent-i[7])<20:
+                        retrieved_images.append(i[2])
     return retrieved_images
 
 def save_image(Image):
@@ -52,8 +58,13 @@ def save_image(Image):
         # Second: Get the mean
         mean = Get_image_mean_color(imageLoad(im))
         Image['mean'] = MeanSerial(mean)
-        # TODO: Third: Get the Object
-        # TODO: Forth: Get the Gabor
+        # Third: Get the Object
+        DL = DeepLearning()
+        object_in_image, percent = DL.predict_image(imageLoad(im))
+        Image['object_in_pic'] = object_in_image
+        print(type(float(percent)), float(percent))
+        Image['percent'] = float(percent)
+        # Forth: Get the Gabor
         G = Gabor()
         gabor = G.gabor_histogram(imageLoad(im))
         Image['gabor'] = GaborSerial(gabor)

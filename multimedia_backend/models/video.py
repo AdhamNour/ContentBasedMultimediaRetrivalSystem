@@ -13,6 +13,7 @@ class VideoClass(db.Model, Base):
     no_of_keyframes = db.Column(db.Integer)
     tags = db.Column(db.String(2000))
     length = db.Column(db.Integer)
+    offline_location = db.Column(db.String(2000))
 
     def serialize(self):
         return {

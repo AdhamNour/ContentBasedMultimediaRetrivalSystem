@@ -1,9 +1,9 @@
 from Katna.video import Video
 from Katna.writer import KeyFrameDiskWriter
 import os
-import image_alg 
+from multimedia_algorithms import image_alg 
 # input vedio path , destination folderr , no of key frames 
-def key_frame_extraction(video_path, destination, no_of_frames_to_returned):
+def key_frame_extraction(video_path, destination, no_of_frames_to_returned=10):
     vd = Video()
     no_of_frames_to_returned = int(no_of_frames_to_returned)
     if not os.path.exists(destination):
