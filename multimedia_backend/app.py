@@ -20,3 +20,4 @@ from models.config import host
 if __name__ == '__main__':
     app.run(debug=True, host=host)
     # TODO: Load the Image Database 
+    # TODO: Fix the Object Detector
