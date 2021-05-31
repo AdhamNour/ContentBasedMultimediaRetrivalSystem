@@ -10,18 +10,25 @@ path="/media/dj/DJ/Senior College/2nd Term/Multimedia/Project/ContentBasedMultim
 
 def retrive_Image(imageUrl):
     #get all images
-    All_Images = ImageClass.query.with_entities(ImageClass.offline_location,ImageClass.image_id, ImageClass.url)
+    All_Images = ImageClass.query.with_entities(ImageClass.offline_location,ImageClass.image_id, ImageClass.url, ImageClass.mean)
     images = [image for image in All_Images]  
     retrieved_images =[] 
     save_image({"url":imageUrl['link'], "title":"Untitled"})
     Image_to_compare = np.asarray(bytearray(requests.get(imageUrl['link']).content), dtype="uint8")
     Image_to_compare = imageLoad(Image_to_compare)
-    # if imageUrl['retreival_algorithms'] == :
-        
-    for i in images:
-        image = open(i[0])
-        if True: #TODO: Check using Retrieval Algorithms
-            retrieved_images.append(i[2])
+    print(imageUrl['retreival_algorithms'])
+    # algorithms = json.load(imageUrl['retreival_algorithms'])
+    # for alg in ['Histogram','Mean','GaborFilter','RESNET']:    
+    #     if algorithms[alg]:
+    #         for i in images:
+    #             image = imageLoad(open(i[0]))
+    #             if alg=='Histogram' and compare_image_histgram(Image_to_compare, image):
+    #                 retrieved_images.append(i[2])
+    #             elif alg=='Mean' and image_comapare_mean(Image_to_compare, MeanDeSerial(i[3]))<50:
+    #                 retrieved_images.append(i[2])
+    #             elif alg=='GaborFilter':
+                    
+    #                 retrieved_images.append(i[2])
     return retrieved_images
 
 def save_image(Image):

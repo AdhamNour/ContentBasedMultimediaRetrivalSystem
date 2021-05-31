@@ -73,7 +73,7 @@ def MeanDeSerial(hist):
 # second fun to get different histogram input 2 image path , output : value of  similarity
 
 
-def compare_image_histgram(image_path1, image_path2, type_of_compare):
+def compare_image_histgram(image_path1, image_path2, type_of_compare='correl'):
     scoure = 0
     diffs = []
     # return number from 0 to 1
@@ -251,6 +251,11 @@ class Gabor(object):
             np.maximum(accum, fimg, accum)
 
         return accum
+
+def Gabor_Method(Im1, Im2):
+    G = Gabor()
+
+    hist = G.gabor_histogram(img)
 
 
 # how to use it
