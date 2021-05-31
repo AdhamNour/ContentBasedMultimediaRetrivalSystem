@@ -18,13 +18,13 @@ class SearchComponent extends StatefulWidget {
 class _SearchComponentState extends State<SearchComponent> {
   var algorithms = {
     'Histogram': false,
-    'Text': true,
-    'GaborFilter': true,
+    'Mean': true,
+    'GaborFilter': false,
     'RESNET': false
   };
 
   void searchRequest(ResultsProvider resultProvider, {String? url}) {
-    http.post(Uri.parse('http://192.168.1.9:5000/${widget.searchType}'), body: {
+    http.post(Uri.parse('http://192.168.1.10:5000/${widget.searchType}'), body: {
       'link': url,
       'retreival_algorithms': jsonEncode(algorithms)
     }).then((value) {

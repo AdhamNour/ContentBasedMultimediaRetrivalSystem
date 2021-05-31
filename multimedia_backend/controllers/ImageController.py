@@ -1,3 +1,4 @@
+import PIL
 from errors import *
 import requests
 import os
@@ -10,37 +11,41 @@ path="/media/dj/DJ/Senior College/2nd Term/Multimedia/Project/ContentBasedMultim
 
 def retrive_Image(imageUrl):
     #get all images
-    All_Images = ImageClass.query.with_entities(ImageClass.offline_location,ImageClass.image_id, ImageClass.url, ImageClass.mean)
+    All_Images = ImageClass.query.with_entities(ImageClass.offline_location,ImageClass.image_id,\
+        ImageClass.url, ImageClass.mean, ImageClass.histogram, ImageClass.gabor)
     images = [image for image in All_Images]  
     retrieved_images =[] 
     save_image({"url":imageUrl['link'], "title":"Untitled"})
     Image_to_compare = np.asarray(bytearray(requests.get(imageUrl['link']).content), dtype="uint8")
     Image_to_compare = imageLoad(Image_to_compare)
-    print(imageUrl['retreival_algorithms'])
-    # algorithms = json.load(imageUrl['retreival_algorithms'])
-    # for alg in ['Histogram','Mean','GaborFilter','RESNET']:    
-    #     if algorithms[alg]:
-    #         for i in images:
-    #             image = imageLoad(open(i[0]))
-    #             if alg=='Histogram' and compare_image_histgram(Image_to_compare, image):
-    #                 retrieved_images.append(i[2])
-    #             elif alg=='Mean' and image_comapare_mean(Image_to_compare, MeanDeSerial(i[3]))<50:
-    #                 retrieved_images.append(i[2])
-    #             elif alg=='GaborFilter':
-                    
-    #                 retrieved_images.append(i[2])
+    algorithms=json.loads(imageUrl['retreival_algorithms'])
+    for alg in ['Histogram','Mean','GaborFilter','RESNET']:    
+        if algorithms[alg]:
+            for i in images:
+                # Image_in_db = Load_from_Local(i[0])
+                if alg=='Histogram' and compare_image_histgram(Image_to_compare, HistoDeSerial(i[4])) is not None:
+                    retrieved_images.append(i[2])
+                elif alg=='Mean' and image_comapare_mean(Image_to_compare, MeanDeSerial(i[3]))<=50:
+                    retrieved_images.append(i[2])
+                elif alg=='GaborFilter' and Gabor_Method(Image_to_compare, GaborDeSerial(i[5]))>=50:
+                    retrieved_images.append(i[2])
+                # TODO: Integrate the RESNET
     return retrieved_images
 
 def save_image(Image):
     All_Images = ImageClass.query.with_entities(ImageClass.url)
     images = [url for image in All_Images for url in image]
     if Image['url'] not in images: 
-        paths, dirs, files = next(os.walk(path))
-        file_count = len(files)
+        file_count=0
+        for base, dirs, files in os.walk(path):
+            for Files in files:
+                file_count += 1
         response = requests.get(Image['url'])
         name = f"{Image['title']}_{file_count+1}"
         # TODO:Image Preprocessing
         im = np.asarray(bytearray(response.content), dtype="uint8")
+        print(im.size)
+        print(imageLoad(im).size)
         # First: Get the Histogram
         hist = Get_image_histogram(imageLoad(im))
         Image['histogram']=HistoSerial(hist)
@@ -48,6 +53,10 @@ def save_image(Image):
         mean = Get_image_mean_color(imageLoad(im))
         Image['mean'] = MeanSerial(mean)
         # TODO: Third: Get the Object
+        # TODO: Forth: Get the Gabor
+        G = Gabor()
+        gabor = G.gabor_histogram(imageLoad(im))
+        Image['gabor'] = GaborSerial(gabor)
         # check if url is duplicate, then add to database
         Image['offline_location']=f"{path}{name}.png"
         newImage = ImageClass(**Image)
@@ -63,5 +72,11 @@ def save_image(Image):
         file.write(im)
         file.close()
 
-    
+def Load_from_Local(URL):
+    Image_in_db = open(URL,'rb')
+    Image_in_db = Image_in_db.read()
+    Image_in_db = np.asarray(bytearray(Image_in_db), dtype='uint8')
+    Image_in_db = imageLoad(Image_in_db)
+    return Image_in_db
+
 # save_image({"url":"https://i.ytimg.com/vi/sC-dEuejKHk/maxresdefault.jpg", "title":"Spider-Man"})

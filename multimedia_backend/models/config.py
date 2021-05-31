@@ -13,7 +13,7 @@ setup_db(app)
     binds a flask application and a SQLAlchemy service
 '''
 
-host = "192.168.1.9"
+host = "192.168.1.10"
 
 def app_setup(app):
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

@@ -16,6 +16,7 @@ class ImageClass(db.Model, Base):
     histogram = db.Column(db.JSON)
     mean = db.Column(db.JSON)
     description = db.Column(db.String(2000))
+    gabor = db.Column(db.JSON)
 
     def serialize(self):
         return {
@@ -28,7 +29,8 @@ class ImageClass(db.Model, Base):
             "author":self.author,
             "histogram":self.histogram,
             "mean":self.mean,
-            "description":self.description
+            "description":self.description,
+            "gabor":self.gabor 
         }
 
     def insert(self):

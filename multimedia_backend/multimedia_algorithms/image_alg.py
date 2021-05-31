@@ -17,10 +17,14 @@ import scipy.ndimage as ndi
 from multiprocessing.pool import ThreadPool
 
 # Necessary for processing local Images, and maybe the loaded ones too
+
+
 def imageLoad(image):
     return cv2.cvtColor(np.float32(image), cv2.COLOR_BGR2RGB)
 
 # first fun to get histogeam from image Input : image , Output : histogram   (1)
+
+
 def Get_image_histogram(image_path):
     hist = []
     #image = mpimg.imread(image_path,cv2.IMREAD_COLOR)
@@ -45,9 +49,22 @@ def HistoSerial(hist):
 
 def HistoDeSerial(hist):
     hist = json.loads(hist)
-    newHist = [np.asarray(hist['red'], dtype=np.float32)
-               ,np.asarray(hist['green'], dtype=np.float32)
-               ,np.asarray(hist['blue'], dtype=np.float32)]
+    newHist = [np.asarray(hist['red'], dtype=np.float32), np.asarray(
+        hist['green'], dtype=np.float32), np.asarray(hist['blue'], dtype=np.float32)]
+    return newHist
+
+# Serialize the Gabor
+
+
+def GaborSerial(hist):
+    return json.dumps({"value": hist.tolist()})
+
+# deSerialize the Gabor
+
+
+def GaborDeSerial(hist):
+    hist = json.loads(hist)
+    newHist = np.asarray(hist['value'],dtype=np.float32)
     return newHist
 
 # Serialize the Mean
@@ -65,9 +82,7 @@ def MeanSerial(hist):
 
 def MeanDeSerial(hist):
     hist = json.loads(hist)
-    newHist = [hist['red']
-               ,hist['green']
-               ,hist['blue']]
+    newHist = [hist['red'], hist['green'], hist['blue']]
     return newHist
 
 # second fun to get different histogram input 2 image path , output : value of  similarity
@@ -83,11 +98,12 @@ def compare_image_histgram(image_path1, image_path2, type_of_compare='correl'):
     elif (type_of_compare == "distance" or type_of_compare == "DISTANCE"):
         compare_method = cv2.HISTCMP_BHATTACHARYYA
     diffs.append(cv2.compareHist(Get_image_histogram(image_path1)[
-                 0], Get_image_histogram(image_path2)[0], compare_method))
+                 0], image_path2[0], compare_method))
     diffs.append(cv2.compareHist(Get_image_histogram(image_path1)[
-                 1], Get_image_histogram(image_path2)[1], compare_method))
+                 1], image_path2[1], compare_method))
     diffs.append(cv2.compareHist(Get_image_histogram(image_path1)[
-                 2], Get_image_histogram(image_path2)[3], compare_method))
+                 2], image_path2[2], compare_method))
+    print(diffs)
     for diff in diffs:
         if (compare_method == cv2.HISTCMP_CORREL):
             if diff * 100 > 20:
@@ -99,6 +115,7 @@ def compare_image_histgram(image_path1, image_path2, type_of_compare='correl'):
             if diff > 20:
                 scoure += 1
         # print(diff)
+    print(scoure)
     if scoure > 2:
         return image_path2
     scoure = 0
@@ -121,11 +138,10 @@ def comapare_image_text(string_input, string_database):
 
 def Get_image_mean_color(image_path):
     #image = mpimg.imread(image_path, cv2.IMREAD_COLOR)
-    image=image_path
+    image = image_path
     #channels = cv2.mean(image)
     #observation = np.array([(channels[2], channels[1], channels[0])])
     # same as mean
-    print(image.size)
     red_channel = image[:, :, 2]
     green_channel = image[:, :, 1]
     blue_channel = image[:, :, 0]
@@ -142,8 +158,10 @@ def Get_image_mean_color(image_path):
 def image_comapare_mean(image_path, mean_color_in_db):
     diff = []
     similar = Get_image_mean_color(image_path)
+    print(similar)
+    print(mean_color_in_db)
     for i in range(3):
-        diff[i] = abs(similar[i] - mean_color_in_db[i])
+        diff.append(abs(similar[i] - mean_color_in_db[i]))
     average = sum(diff) / 3
     return average
 
@@ -229,7 +247,8 @@ class Gabor(object):
 
             for hs in range(len(h_silce)-1):
                 for ws in range(len(w_slice)-1):
-                    img_r = img[h_silce[hs]:h_silce[hs+1], w_slice[ws]                                :w_slice[ws+1]]  # slice img to regions
+                    img_r = img[h_silce[hs]:h_silce[hs+1], w_slice[ws]
+                        :w_slice[ws+1]]  # slice img to regions
                     hist[hs][ws] = self._gabor(
                         img_r, kernels=self.gabor_kernels)
 
@@ -240,8 +259,8 @@ class Gabor(object):
     def compareHist(self, image1, image2):
 
         hist1 = self.gabor_histogram(image1)
-        hist2 = self.gabor_histogram(image2)
-
+        hist2 = image2
+        
         return cv2.compareHist(hist1, hist2, cv2.HISTCMP_CORREL)
 
     def _gabor(self, image, kernels):
@@ -252,10 +271,10 @@ class Gabor(object):
 
         return accum
 
+
 def Gabor_Method(Im1, Im2):
     G = Gabor()
-
-    hist = G.gabor_histogram(img)
+    return G.compareHist(Im1, Im2)*100
 
 
 # how to use it
