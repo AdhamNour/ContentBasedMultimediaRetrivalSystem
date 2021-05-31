@@ -5,7 +5,7 @@ from models.image import ImageClass
 from sqlalchemy.exc import SQLAlchemyError
 from multimedia_algorithms.image_alg import * 
 
-path="/media/dj/DJ/Senior College/2nd Term/Multimedia/Project/ContentBasedMultimediaRetrivalSystem/multimedia_backend/static/"
+path="/media/dj/DJ/Senior College/2nd Term/Multimedia/Project/ContentBasedMultimediaRetrivalSystem/multimedia_backend/static/images/"
 
 
 def retrive_Image(imageUrl):
@@ -14,10 +14,13 @@ def retrive_Image(imageUrl):
     images = [image for image in All_Images]  
     retrieved_images =[] 
     save_image({"url":imageUrl['link'], "title":"Untitled"})
-    #TODO: here where the call of the reterival algorithm should be called in stead of the for loop
+    Image_to_compare = np.asarray(bytearray(requests.get(imageUrl['link']).content), dtype="uint8")
+    Image_to_compare = imageLoad(Image_to_compare)
+    # if imageUrl['retreival_algorithms'] == :
+        
     for i in images:
         image = open(i[0])
-        if True: #Check using Retrieval Algorithms
+        if True: #TODO: Check using Retrieval Algorithms
             retrieved_images.append(i[2])
     return retrieved_images
 
@@ -37,6 +40,7 @@ def save_image(Image):
         # Second: Get the mean
         mean = Get_image_mean_color(imageLoad(im))
         Image['mean'] = MeanSerial(mean)
+        # TODO: Third: Get the Object
         # check if url is duplicate, then add to database
         Image['offline_location']=f"{path}{name}.png"
         newImage = ImageClass(**Image)
