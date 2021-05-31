@@ -303,3 +303,4 @@ lib/generated_plugin_registrant.dart
 .vscode
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,python,flask,flutter
+multimedia_backend/models/config.py

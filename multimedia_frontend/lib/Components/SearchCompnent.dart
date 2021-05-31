@@ -24,7 +24,7 @@ class _SearchComponentState extends State<SearchComponent> {
   };
 
   void searchRequest(ResultsProvider resultProvider, {String? url}) {
-    http.post(Uri.parse('https://192.168.1.10:5000/${widget.searchType}'), body: {
+    http.post(Uri.parse('http://192.168.1.9:5000/${widget.searchType}'), body: {
       'link': url,
       'retreival_algorithms': jsonEncode(algorithms)
     }).then((value) {
@@ -61,23 +61,9 @@ class _SearchComponentState extends State<SearchComponent> {
                       controller: urlController,
                     ),
                   ),
-                  IconButton(
-                      onPressed: () {
-                        print("[AdhamNour]${urlController.text}");
-                        searchRequest(resultProvider, url: urlController.text);
-                      },
-                      icon: FaIcon(FontAwesomeIcons.search))
                 ],
               ),
             ),
-          ),
-          Padding(
-            //Add Camera Button
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton.icon(
-                onPressed: () => {},
-                icon: FaIcon(FontAwesomeIcons.handsHelping),
-                label: Text('Helping ${widget.searchType}')),
           ),
           if (widget.searchType == 'Image')
             Padding(
@@ -89,11 +75,14 @@ class _SearchComponentState extends State<SearchComponent> {
                       .map((e) => CheckboxListTile(
                           value: algorithms[e],
                           onChanged: (newVal) {
-                            searchRequest(resultProvider,
-                                url: urlController.text);
                             setState(() {
                               if (newVal != null) {
-                                algorithms[e] = newVal ? true : false;
+                                algorithms[e] = newVal;
+                                algorithms.keys.forEach((element) {
+                                  if (element != e) {
+                                    algorithms[element] = false;
+                                  }
+                                });
                               }
                             });
                           },
@@ -102,7 +91,18 @@ class _SearchComponentState extends State<SearchComponent> {
                 ),
                 height: screenSize.height * 0.185,
               ),
-            )
+            ),
+          Padding(
+            //Add Camera Button
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton.icon(
+                onPressed: () {
+                  print("[AdhamNour]${urlController.text}");
+                  searchRequest(resultProvider, url: urlController.text);
+                },
+                icon: FaIcon(FontAwesomeIcons.search),
+                label: Text('Search in ${widget.searchType}s')),
+          ),
         ],
       ),
     );

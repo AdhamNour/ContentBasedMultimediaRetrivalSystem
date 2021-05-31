@@ -17,8 +17,6 @@ api.add_resource(Video,'/Video')
 api.add_resource(ImageSearch,'/Image')
 api.add_resource(ImageUpload,'/uploadImage')
 
-# app_setup(app)
-# app.app_context().push()
 from models.config import host
 if __name__ == '__main__':
     app.run(debug=True, host=host)
