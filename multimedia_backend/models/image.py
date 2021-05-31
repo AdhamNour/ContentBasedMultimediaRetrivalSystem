@@ -13,8 +13,8 @@ class ImageClass(db.Model, Base):
     percent = db.Column(db.Float)
     object_in_pic = db.Column(db.String(70)) 
     author = db.Column(db.String(80))
-    histogram = db.Column(db.Float)
-    mean = db.Column(db.Float)
+    histogram = db.Column(db.JSON)
+    mean = db.Column(db.JSON)
     description = db.Column(db.String(2000))
 
     def serialize(self):

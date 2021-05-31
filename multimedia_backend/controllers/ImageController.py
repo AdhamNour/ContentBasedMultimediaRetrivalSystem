@@ -3,6 +3,8 @@ import requests
 import os
 from models.image import ImageClass
 from sqlalchemy.exc import SQLAlchemyError
+from multimedia_algorithms.image_alg import * 
+
 path="/media/dj/DJ/Senior College/2nd Term/Multimedia/Project/ContentBasedMultimediaRetrivalSystem/multimedia_backend/static/"
 
 
@@ -28,6 +30,13 @@ def save_image(Image):
         response = requests.get(Image['url'])
         name = f"{Image['title']}_{file_count+1}"
         # TODO:Image Preprocessing
+        im = np.asarray(bytearray(response.content), dtype="uint8")
+        # First: Get the Histogram
+        hist = Get_image_histogram(imageLoad(im))
+        Image['histogram']=HistoSerial(hist)
+        # Second: Get the mean
+        mean = Get_image_mean_color(imageLoad(im))
+        Image['mean'] = MeanSerial(mean)
         # check if url is duplicate, then add to database
         Image['offline_location']=f"{path}{name}.png"
         newImage = ImageClass(**Image)
@@ -40,7 +49,7 @@ def save_image(Image):
                     'status_code': 404
                 })
         file = open(f"{path}{name}.png", "wb")
-        file.write(response.content)
+        file.write(im)
         file.close()
 
     
