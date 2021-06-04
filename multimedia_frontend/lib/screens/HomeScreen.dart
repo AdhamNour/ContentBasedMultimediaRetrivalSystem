@@ -3,31 +3,107 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:multimedia_frontend/Components/SearchResultItemVideoPresenter.dart';
 import './SearchScreen.dart';
 
 class HomeScreen extends StatelessWidget {
   static const String routeName = "home";
 
-  void showSummary(FilePickerResult? result, BuildContext context) {
+  void showSummary(
+      {FilePickerResult? result,
+      required BuildContext context,
+      required String type}) {
     if (result != null) {
       File file = File(result.files.single.path.toString());
       showDialog(
           context: context,
-          builder: (ctx) => AlertDialog(
-                title: Text("Confirm Image"),
-                content: Column(
+          builder: (ctx) {
+            return AlertDialog(
+              title: Text("Complete ${type} Data"),
+              content: SingleChildScrollView(
+                child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: [Text('you have selected'), Image.file(file)],
+                  children: [
+                    Text('you have selected'),
+                    Image.file(file),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(), hintText: 'Author'),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(), hintText: 'Title'),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'Discription'),
+                      ),
+                    )
+                  ],
                 ),
-                actions: [
-                  TextButton.icon(
-                      onPressed: () {
-                        Navigator.of(context).pop('ok');
-                      },
-                      icon: Icon(Icons.thumb_up),
-                      label: Text('Okay'))
-                ],
-              )).then((value) {
+              ),
+              actions: [
+                TextButton.icon(
+                    onPressed: () {
+                      Navigator.of(context).pop('ok');
+                    },
+                    icon: Icon(Icons.thumb_up),
+                    label: Text('Okay'))
+              ],
+            );
+          }).then((value) {
+        if (value != 'ok') {
+          showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                    title: Text("Selection Canceled"),
+                    content: Text("You have canceled the file selection"),
+                  ));
+        }
+      });
+    } else if (type == 'Video') {
+      showDialog(
+          context: context,
+          builder: (ctx) {
+            final urlController = TextEditingController();
+            return AlertDialog(
+              title: Text("Complete ${type} Data"),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    VideoPreview(
+                      urlController: urlController,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(), hintText: 'Author'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton.icon(
+                    onPressed: () {
+                      Navigator.of(context).pop('ok');
+                    },
+                    icon: Icon(Icons.thumb_up),
+                    label: Text('Okay'))
+              ],
+            );
+          }).then((value) {
         if (value != 'ok') {
           showDialog(
               context: context,
@@ -82,9 +158,7 @@ class HomeScreen extends StatelessWidget {
               children: [
                 TextButton.icon(
                     onPressed: () async {
-                      FilePickerResult? result =
-                          await FilePicker.platform.pickFiles();
-                      showSummary(result, context);
+                      showSummary(context: context, type: 'Video');
                     },
                     icon: FaIcon(FontAwesomeIcons.fileVideo),
                     label: Text('Upload Video')),
@@ -92,7 +166,8 @@ class HomeScreen extends StatelessWidget {
                     onPressed: () async {
                       FilePickerResult? result =
                           await FilePicker.platform.pickFiles();
-                      showSummary(result, context);
+                      showSummary(
+                          result: result, context: context, type: 'Image');
                     },
                     icon: FaIcon(FontAwesomeIcons.images),
                     label: Text('Upload Image')),
@@ -103,6 +178,51 @@ class HomeScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
         ),
       ),
+    );
+  }
+}
+
+class VideoPreview extends StatefulWidget {
+  final TextEditingController urlController;
+
+  const VideoPreview({
+    Key? key,
+    required this.urlController,
+  }) : super(key: key);
+
+  @override
+  _VideoPreviewState createState() => _VideoPreviewState();
+}
+
+class _VideoPreviewState extends State<VideoPreview> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: 'Youtube Video URL'),
+                    controller: widget.urlController,
+                  ),
+                ),
+              ),
+              IconButton(
+                  onPressed: () => setState(() {}),
+                  icon: FaIcon(FontAwesomeIcons.search))
+            ],
+          ),
+        ),
+        if (widget.urlController.text.isNotEmpty)
+          SearchResultItemVideoPresenter(url: widget.urlController.text)
+      ],
     );
   }
 }
