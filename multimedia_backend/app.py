@@ -15,6 +15,7 @@ app.app_context().push()
 api.add_resource(VideoSearch,'/Video')
 api.add_resource(ImageSearch,'/Image')
 api.add_resource(ImageUpload,'/uploadImage')
+api.add_resource(BinaryImageUpload,'/uploadBinaryImage')
 api.add_resource(VideoUpload,'/uploadVideo')
 api.add_resource(Send, '/static/<Type>/<image>')
 

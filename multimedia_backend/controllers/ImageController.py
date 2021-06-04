@@ -85,6 +85,47 @@ def save_image(Image):
         file.write(im)
         file.close()
 
+def save_binary_image(Image): 
+    file_count=0
+    for base, dirs, files in os.walk(f"{path}{innerPath}"):
+        for Files in files:
+            file_count += 1
+    name = f"Untitled_{file_count+1}"
+    # TODO:Image Preprocessing
+    im = np.asarray(bytearray(Image['content']), dtype="uint8")
+    print(im.size)
+    print(imageLoad(im).size)
+    # First: Get the Histogram
+    hist = Get_image_histogram(imageLoad(im))
+    Image['histogram']=HistoSerial(hist)
+    # Second: Get the mean
+    mean = Get_image_mean_color(imageLoad(im))
+    Image['mean'] = MeanSerial(mean)
+    # Third: Get the Object
+    DL = DeepLearning()
+    object_in_image, percent = DL.predict_image(imageLoad(im))
+    Image['object_in_pic'] = object_in_image
+    print(object_in_image, float(percent))
+    Image['percent'] = float(percent)
+    # Forth: Get the Gabor
+    G = Gabor()
+    gabor = G.gabor_histogram(imageLoad(im))
+    Image['gabor'] = GaborSerial(gabor)
+    # check if url is duplicate, then add to database
+    Image['offline_location']=f"{innerPath}{name}.png"
+    newImage = ImageClass(**Image)
+    try:
+        newImage.insert()
+    except SQLAlchemyError as e:
+            error = str(e.__dict__['orig'])
+            raise ErrorHandler({
+                'description': error,
+                'status_code': 404
+            })
+    file = open(f"{path}{innerPath}{name}.png", "wb")
+    file.write(im)
+    file.close()
+
 def Load_from_Local(URL):
     Image_in_db = open(URL,'rb')
     Image_in_db = Image_in_db.read()
