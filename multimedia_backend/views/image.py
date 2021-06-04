@@ -1,7 +1,8 @@
-from flask_restful import Resource,reqparse
+from flask_restful import Resource,reqparse, request
 from controllers.ImageController import *
 from errors import *
 import werkzeug
+
 
 class ImageSearch(Resource):
     
@@ -39,15 +40,19 @@ class BinaryImageUpload(Resource):
     
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('content', type=werkzeug.datastructures.FileStorage, location='files')
+        self.reqparse.add_argument('content', type=werkzeug.datastructures.FileStorage,location='files')
+        self.reqparse.add_argument('hello')
         # self.reqparse.add_argument('author')
         # self.reqparse.add_argument('title')
         # self.reqparse.add_argument('description')
         
     def post(self):
+        
+        #print(request.values)
         args = self.reqparse.parse_args()
+        print(args)
         try:
-            save_image(args)
+            save_binary_image(args)
         except ErrorHandler as e:
             return e.error
         return {

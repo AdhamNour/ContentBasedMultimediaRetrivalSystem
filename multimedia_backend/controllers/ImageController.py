@@ -6,10 +6,13 @@ from models.image import ImageClass
 from sqlalchemy.exc import SQLAlchemyError
 from multimedia_algorithms.image_alg import * 
 from models.config import host
+from io import StringIO
+import json
+from requests_toolbelt.multipart.decoder import MultipartDecoder
 
-# path="D:\\Projects\\ContentBasedMultimediaRetrivalSystem\\multimedia_backend\\static\\"
-path="/media/dj/DJ/Senior College/2nd Term/Multimedia/Project/ContentBasedMultimediaRetrivalSystem/multimedia_backend"
-innerPath='/static/images/'
+path="D:\\Projects\\ContentBasedMultimediaRetrivalSystem\\multimedia_backend"
+#path="/media/dj/DJ/Senior College/2nd Term/Multimedia/Project/ContentBasedMultimediaRetrivalSystem/multimedia_backend"
+innerPath='\\static\\images\\'
 
 def retrive_Image(imageUrl):
     #get all images
@@ -85,14 +88,20 @@ def save_image(Image):
         file.write(im)
         file.close()
 
-def save_binary_image(Image): 
+def save_binary_image(I2): 
     file_count=0
     for base, dirs, files in os.walk(f"{path}{innerPath}"):
         for Files in files:
             file_count += 1
+    print(file_count, file_count+1)
     name = f"Untitled_{file_count+1}"
+    print(os.path.splitext(I2['content'].filename)[0])
     # TODO:Image Preprocessing
-    im = np.asarray(bytearray(Image['content'].read()), dtype="uint8")
+    Image={}
+    
+    Image['url']=''
+    Image['title']=os.path.splitext(I2['content'].filename)[0]
+    im = np.asarray(bytearray(I2['content'].read()), dtype="uint8")
     print(im.size)
     print(imageLoad(im).size)
     # First: Get the Histogram
@@ -114,10 +123,13 @@ def save_binary_image(Image):
     # check if url is duplicate, then add to database
     Image['offline_location']=f"{innerPath}{name}.png"
     newImage = ImageClass(**Image)
+    print("saving")
     try:
         newImage.insert()
+        print("Saved")
     except SQLAlchemyError as e:
             error = str(e.__dict__['orig'])
+            print(error)
             raise ErrorHandler({
                 'description': error,
                 'status_code': 404

@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart' as http;
+
 import 'package:multimedia_frontend/Components/SearchResultItemVideoPresenter.dart';
 import './SearchScreen.dart';
 
@@ -55,6 +57,16 @@ class HomeScreen extends StatelessWidget {
                 TextButton.icon(
                     onPressed: () {
                       Navigator.of(context).pop('ok');
+                      var request = http.MultipartRequest('POST',
+                          Uri.parse('http://192.168.1.9:5000/uploadBinaryImage'))..fields['hello']='hello';
+                      print(file.readAsBytesSync());
+                      print(http.MultipartFile.fromBytes(
+                          'content', file.readAsBytesSync()).toString());
+                      request.files.add(http.MultipartFile.fromBytes(
+                          'content', file.readAsBytesSync(), filename: file.path.split('/').last));
+                      request
+                          .send()
+                          .then((value) => print('[AdhamNour]${value.toString()}'));
                     },
                     icon: Icon(Icons.thumb_up),
                     label: Text('Okay'))
