@@ -6,7 +6,7 @@ from models.image import ImageClass
 from sqlalchemy.exc import SQLAlchemyError
 from multimedia_algorithms.image_alg import * 
 
-path="/media/dj/DJ/Senior College/2nd Term/Multimedia/Project/ContentBasedMultimediaRetrivalSystem/multimedia_backend/static/images/"
+path="D:\\Projects\\ContentBasedMultimediaRetrivalSystem\\multimedia_backend\\static\\"
 
 
 def retrive_Image(imageUrl):
@@ -69,7 +69,7 @@ def save_image(Image):
         gabor = G.gabor_histogram(imageLoad(im))
         Image['gabor'] = GaborSerial(gabor)
         # check if url is duplicate, then add to database
-        Image['offline_location']=f"{path}{name}.png"
+        Image['offline_location']=f"{name}.png"
         newImage = ImageClass(**Image)
         try:
             newImage.insert()
@@ -84,7 +84,7 @@ def save_image(Image):
         file.close()
 
 def Load_from_Local(URL):
-    Image_in_db = open(URL,'rb')
+    Image_in_db = open(f"{path}{URL}",'rb')
     Image_in_db = Image_in_db.read()
     Image_in_db = np.asarray(bytearray(Image_in_db), dtype='uint8')
     Image_in_db = imageLoad(Image_in_db)
