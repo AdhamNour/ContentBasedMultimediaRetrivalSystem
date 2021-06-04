@@ -5,10 +5,11 @@ import os
 from models.image import ImageClass
 from sqlalchemy.exc import SQLAlchemyError
 from multimedia_algorithms.image_alg import * 
+from models.config import host
 
 # path="D:\\Projects\\ContentBasedMultimediaRetrivalSystem\\multimedia_backend\\static\\"
-path="/media/dj/DJ/Senior College/2nd Term/Multimedia/Project/ContentBasedMultimediaRetrivalSystem/multimedia_backend/static/images/"
-
+path="/media/dj/DJ/Senior College/2nd Term/Multimedia/Project/ContentBasedMultimediaRetrivalSystem/multimedia_backend"
+innerPath='/static/images/'
 
 def retrive_Image(imageUrl):
     #get all images
@@ -26,17 +27,17 @@ def retrive_Image(imageUrl):
             for i in images:
                 Image_in_db = Load_from_Local(f"{path}{i[0]}")
                 if alg=='Histogram' and compare_image_histgram(Image_to_compare, Image_in_db) is not None:
-                    retrieved_images.append(i[2])
+                    retrieved_images.append(f"http://{host}:5000{i[0]}")
                 elif alg=='Mean' and image_comapare_mean(Image_to_compare, MeanDeSerial(i[3]))<=50:
-                    retrieved_images.append(i[2])
+                    retrieved_images.append(f"http://{host}:5000{i[0]}")
                 elif alg=='GaborFilter' and Gabor_Method(Image_to_compare, GaborDeSerial(i[5]))>=50:
-                    retrieved_images.append(i[2])
+                    retrieved_images.append(f"http://{host}:5000{i[0]}")
                 # TODO: Integrate the RESNET
                 elif alg=='RESNET':
                     DL = DeepLearning()
                     object_in_pic, percent = DL.predict_image(Image_to_compare)
                     if object_in_pic==i[6] and abs(percent-i[7])<20:
-                        retrieved_images.append(i[2])
+                        retrieved_images.append(f"http://{host}:5000{i[0]}")
     return retrieved_images
 
 def save_image(Image):
@@ -44,7 +45,7 @@ def save_image(Image):
     images = [url for image in All_Images for url in image]
     if Image['url'] not in images: 
         file_count=0
-        for base, dirs, files in os.walk(path):
+        for base, dirs, files in os.walk(f"{path}{innerPath}"):
             for Files in files:
                 file_count += 1
         response = requests.get(Image['url'])
@@ -70,7 +71,7 @@ def save_image(Image):
         gabor = G.gabor_histogram(imageLoad(im))
         Image['gabor'] = GaborSerial(gabor)
         # check if url is duplicate, then add to database
-        Image['offline_location']=f"{name}.png"
+        Image['offline_location']=f"{innerPath}{name}.png"
         newImage = ImageClass(**Image)
         try:
             newImage.insert()
@@ -80,7 +81,7 @@ def save_image(Image):
                     'description': error,
                     'status_code': 404
                 })
-        file = open(f"{path}{name}.png", "wb")
+        file = open(f"{path}{innerPath}{name}.png", "wb")
         file.write(im)
         file.close()
 
