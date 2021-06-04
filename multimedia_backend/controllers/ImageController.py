@@ -6,7 +6,8 @@ from models.image import ImageClass
 from sqlalchemy.exc import SQLAlchemyError
 from multimedia_algorithms.image_alg import * 
 
-path="D:\\Projects\\ContentBasedMultimediaRetrivalSystem\\multimedia_backend\\static\\"
+# path="D:\\Projects\\ContentBasedMultimediaRetrivalSystem\\multimedia_backend\\static\\"
+path="/media/dj/DJ/Senior College/2nd Term/Multimedia/Project/ContentBasedMultimediaRetrivalSystem/multimedia_backend/static/images/"
 
 
 def retrive_Image(imageUrl):
@@ -23,7 +24,7 @@ def retrive_Image(imageUrl):
     for alg in ['Histogram','Mean','GaborFilter','RESNET']:    
         if algorithms[alg]:
             for i in images:
-                Image_in_db = Load_from_Local(i[0])
+                Image_in_db = Load_from_Local(f"{path}{i[0]}")
                 if alg=='Histogram' and compare_image_histgram(Image_to_compare, Image_in_db) is not None:
                     retrieved_images.append(i[2])
                 elif alg=='Mean' and image_comapare_mean(Image_to_compare, MeanDeSerial(i[3]))<=50:
@@ -84,7 +85,7 @@ def save_image(Image):
         file.close()
 
 def Load_from_Local(URL):
-    Image_in_db = open(f"{path}{URL}",'rb')
+    Image_in_db = open(URL,'rb')
     Image_in_db = Image_in_db.read()
     Image_in_db = np.asarray(bytearray(Image_in_db), dtype='uint8')
     Image_in_db = imageLoad(Image_in_db)

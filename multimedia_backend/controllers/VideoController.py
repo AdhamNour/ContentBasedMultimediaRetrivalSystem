@@ -13,34 +13,39 @@ def retrive_Video(VideoUrl):
     retrived_videos =[]
     Videos = VideoClass.query.with_entities(VideoClass.keyFrame_location, VideoClass.url)
     DB_videos=[ video for video in Videos ]
+    save_video({"url": VideoUrl})
     Keyframes_to_Compare = save_temp_video(VideoUrl)
     for i in DB_videos:
-        if compare_keyframes(Keyframes_to_Compare, i[0]) is not None:           
+        if compare_keyframes(Keyframes_to_Compare, f"{keyPath}{i[0]}") is not None:           
             retrived_videos.append(i[1])
+    #TODO: Empty Folders
+    clear_temp()
     return retrived_videos
 
 def save_video(Video):
-    # Check if Video already Exists
-    # Add Video to Database
-    video = pytube.YouTube(Video['url'])
-    Video['title'] = video.title
-    Video['length'] = video.length
-    Video['no_of_keyframes'] = 15 
-    download = video.streams.first()
-    download.download(path)
-    Video['offline_location'] = f"{path}{download.default_filename}"
-    # Add Keyframes
-    key_frame_extraction(Video['offline_location'], f"{keyPath}{video.title}")
-    Video['keyFrame_location'] = f"{keyPath}{video.title}"
-    v = VideoClass(**Video)
-    try:
-        v.insert()
-    except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        raise ErrorHandler({
-            'description': error,
-            'status_code': 404
-        })
+    All_Videos = VideoClass.query.with_entities(VideoClass.url)
+    Videos = [url for Video in All_Videos for url in Video]
+    if Video['url'] not in Videos: 
+        # Add Video to Database
+        video = pytube.YouTube(Video['url'])
+        Video['title'] = video.title
+        Video['length'] = video.length
+        Video['no_of_keyframes'] = 15 
+        download = video.streams.first()
+        download.download(path)
+        Video['offline_location'] = f"{download.default_filename}"
+        # Add Keyframes
+        key_frame_extraction(f"{path}{Video['offline_location']}", f"{keyPath}{video.title}")
+        Video['keyFrame_location'] = f"{video.title}"
+        v = VideoClass(**Video)
+        try:
+            v.insert()
+        except SQLAlchemyError as e:
+            error = str(e.__dict__['orig'])
+            raise ErrorHandler({
+                'description': error,
+                'status_code': 404
+            })
     
     
 tempPath = "/media/dj/DJ/Senior College/2nd Term/Multimedia/Project/ContentBasedMultimediaRetrivalSystem/multimedia_backend/static/temp/"
@@ -55,3 +60,12 @@ def save_temp_video(url):
     key_frame_extraction(offline_location, tempKeyPath)
     keyFrame_location = tempKeyPath
     return keyFrame_location
+
+def clear_temp():
+    for base, dirs, files in os.walk(tempPath):
+            for Dirs in files:
+                os.remove(base+Dirs)
+    for base, dirs, files in os.walk(tempKeyPath):
+            for Dirs in files:
+                os.remove(base+Dirs)
+    
