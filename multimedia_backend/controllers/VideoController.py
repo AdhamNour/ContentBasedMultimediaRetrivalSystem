@@ -20,7 +20,7 @@ def retrive_Video(VideoUrl):
     return retrived_videos
 
 def save_video(Video):
-    # Check if Video already Exists
+    # TODO: Check if Video already Exists
     # Add Video to Database
     video = pytube.YouTube(Video['url'])
     Video['title'] = video.title
@@ -28,10 +28,10 @@ def save_video(Video):
     Video['no_of_keyframes'] = 15 
     download = video.streams.first()
     download.download(path)
-    Video['offline_location'] = f"{path}{download.default_filename}"
+    Video['offline_location'] = f"{download.default_filename}"
     # Add Keyframes
-    key_frame_extraction(Video['offline_location'], f"{keyPath}{video.title}")
-    Video['keyFrame_location'] = f"{keyPath}{video.title}"
+    key_frame_extraction(f"{path}{Video['offline_location']}", f"{keyPath}{video.title}")
+    Video['keyFrame_location'] = f"{video.title}"
     v = VideoClass(**Video)
     try:
         v.insert()

@@ -6,7 +6,8 @@ from models.image import ImageClass
 from sqlalchemy.exc import SQLAlchemyError
 from multimedia_algorithms.image_alg import * 
 
-path="D:\\Projects\\ContentBasedMultimediaRetrivalSystem\\multimedia_backend\\static\\"
+# path="D:\\Projects\\ContentBasedMultimediaRetrivalSystem\\multimedia_backend\\static\\"
+path="/media/dj/DJ/Senior College/2nd Term/Multimedia/Project/ContentBasedMultimediaRetrivalSystem/multimedia_backend/static/images/"
 
 
 def retrive_Image(imageUrl):
