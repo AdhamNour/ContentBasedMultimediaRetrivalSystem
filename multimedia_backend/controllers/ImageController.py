@@ -92,7 +92,7 @@ def save_binary_image(Image):
             file_count += 1
     name = f"Untitled_{file_count+1}"
     # TODO:Image Preprocessing
-    im = np.asarray(bytearray(Image['content']), dtype="uint8")
+    im = np.asarray(bytearray(Image['content'].read()), dtype="uint8")
     print(im.size)
     print(imageLoad(im).size)
     # First: Get the Histogram
