@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -20,6 +21,10 @@ class HomeScreen extends StatelessWidget {
       showDialog(
           context: context,
           builder: (ctx) {
+            final TextEditingController author, title, description;
+            author = TextEditingController();
+            title = TextEditingController();
+            description = TextEditingController();
             return AlertDialog(
               title: Text("Complete ${type} Data"),
               content: SingleChildScrollView(
@@ -33,6 +38,7 @@ class HomeScreen extends StatelessWidget {
                       child: TextField(
                         decoration: InputDecoration(
                             border: OutlineInputBorder(), hintText: 'Author'),
+                        controller: author,
                       ),
                     ),
                     Padding(
@@ -40,6 +46,7 @@ class HomeScreen extends StatelessWidget {
                       child: TextField(
                         decoration: InputDecoration(
                             border: OutlineInputBorder(), hintText: 'Title'),
+                        controller: title,
                       ),
                     ),
                     Padding(
@@ -48,6 +55,7 @@ class HomeScreen extends StatelessWidget {
                         decoration: InputDecoration(
                             border: OutlineInputBorder(),
                             hintText: 'Discription'),
+                        controller: description,
                       ),
                     )
                   ],
@@ -57,16 +65,25 @@ class HomeScreen extends StatelessWidget {
                 TextButton.icon(
                     onPressed: () {
                       Navigator.of(context).pop('ok');
-                      var request = http.MultipartRequest('POST',
-                          Uri.parse('http://192.168.1.9:5000/uploadBinaryImage'))..fields['hello']='hello';
+                      //TODO: I have added the rest of fields here, adjust them in the backend
+                      var request = http.MultipartRequest(
+                          'POST',
+                          Uri.parse(
+                              'http://192.168.1.9:5000/uploadBinaryImage'))
+                        ..fields.addAll({
+                          "Author": author.text,
+                          "Title": title.text,
+                          "Description": description.text
+                        });
                       print(file.readAsBytesSync());
                       print(http.MultipartFile.fromBytes(
-                          'content', file.readAsBytesSync()).toString());
+                              'content', file.readAsBytesSync())
+                          .toString());
                       request.files.add(http.MultipartFile.fromBytes(
-                          'content', file.readAsBytesSync(), filename: file.path.split('/').last));
-                      request
-                          .send()
-                          .then((value) => print('[AdhamNour]${value.toString()}'));
+                          'content', file.readAsBytesSync(),
+                          filename: file.path.split('/').last));
+                      request.send().then(
+                          (value) => print('[AdhamNour]${value.toString()}'));
                     },
                     icon: Icon(Icons.thumb_up),
                     label: Text('Okay'))
@@ -87,6 +104,7 @@ class HomeScreen extends StatelessWidget {
           context: context,
           builder: (ctx) {
             final urlController = TextEditingController();
+            final author = TextEditingController();
             return AlertDialog(
               title: Text("Complete ${type} Data"),
               content: SingleChildScrollView(
@@ -101,6 +119,7 @@ class HomeScreen extends StatelessWidget {
                       child: TextField(
                         decoration: InputDecoration(
                             border: OutlineInputBorder(), hintText: 'Author'),
+                        controller: author,
                       ),
                     ),
                   ],
@@ -110,6 +129,12 @@ class HomeScreen extends StatelessWidget {
                 TextButton.icon(
                     onPressed: () {
                       Navigator.of(context).pop('ok');
+                      //TODO: Add the route here
+                      http.post(Uri.parse('http://192.168.1.9:5000'),
+                          body: jsonEncode({
+                            "Urlcontroll": urlController.text,
+                            "Author": author.text
+                          }));
                     },
                     icon: Icon(Icons.thumb_up),
                     label: Text('Okay'))
