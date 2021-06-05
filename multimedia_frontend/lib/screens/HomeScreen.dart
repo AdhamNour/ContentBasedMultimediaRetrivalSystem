@@ -56,7 +56,6 @@ class HomeScreen extends StatelessWidget {
                 TextButton.icon(
                     onPressed: () {
                       Navigator.of(context).pop('ok');
-                      //TODO: I have added the rest of fields here, adjust them in the backend
                       var request = http.MultipartRequest(
                           'POST',
                           Uri.parse(

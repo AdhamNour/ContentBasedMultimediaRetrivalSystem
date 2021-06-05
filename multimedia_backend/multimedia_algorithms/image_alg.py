@@ -106,13 +106,13 @@ def compare_image_histgram(image_path1, image_path2, type_of_compare='correl'):
     print(diffs)
     for diff in diffs:
         if (compare_method == cv2.HISTCMP_CORREL):
-            if diff * 100 > 20:
+            if diff * 100 > 40:
                 scoure += 1
 
         elif (compare_method == cv2.HISTCMP_BHATTACHARYYA):
             diff = diff * 100
             diff = 100 - diff
-            if diff > 20:
+            if diff > 40:
                 scoure += 1
         # print(diff)
     print(scoure)

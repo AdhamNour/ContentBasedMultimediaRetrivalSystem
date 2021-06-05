@@ -30,11 +30,11 @@ class _SearchComponentState extends State<SearchComponent> {
           'retreival_algorithms': jsonEncode(algorithms)
         }).then((value) {
       var x = jsonDecode(value.body)['result_links'];
-      List<String> xx = [];
+      List xx = [];
       for (int i = 0; i < x.length; i++) {
         print(x[i]["url"]);
 
-        xx.add(x[i]["url"].toString());
+        xx.add({'Similarity':x[i]['Similarity'],"url":x[i]["url"].toString()});
       }
       resultProvider.results = xx;
     });

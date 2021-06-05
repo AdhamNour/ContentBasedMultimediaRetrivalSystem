@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:multimedia_frontend/Components/SearchResultItemVideoPresenter.dart';
 
 class SearchResultItem extends StatelessWidget {
-  final searchType, index, url;
-  SearchResultItem({this.searchType, this.index, this.url});
+  final searchType, index, url, Similarity;
+  SearchResultItem({this.searchType, this.index, this.url, this.Similarity});
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -14,7 +14,7 @@ class SearchResultItem extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            Text('result #${index + 1}'),
+            Text('result #${index + 1}, Similarity: ${this.Similarity}'),
             searchType == 'Image'
                 ? CachedNetworkImage(
                     imageUrl: url,

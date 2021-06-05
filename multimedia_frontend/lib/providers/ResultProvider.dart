@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
 
 class ResultsProvider extends ChangeNotifier {
-  List<String> _results = [];
+  List _results = [];
 
-  List<String> get results {
+  List get results {
     return [..._results];
   }
 
-  void set results(List<String> iResults) {
+  void set results(List iResults) {
     _results = iResults;
     notifyListeners();
   }

@@ -15,7 +15,7 @@ class SearchResultsListView extends StatelessWidget {
         ? ListView.builder(
             itemBuilder: (_, index) => SearchResultItem(
               searchType: searchType,
-              index: index,url: resultProvider[index],
+              index: index,url: resultProvider[index]["url"], Similarity: resultProvider[index]['Similarity'],
             ),
             itemCount: resultProvider.length,
           )
