@@ -29,15 +29,11 @@ def compare_keyframes(query_video_path, database_video_path):
             file_name2 = database_key_frame.split('.')[0]
             database_image_path = (database_video_path) + '/' + str(file_name2) + '.jpeg'
             database_image = Load_from_Local(database_image_path)
-            if image_alg.compare_image_histgram(query_image, database_image,"CORREL") is not None:
+            if image_alg.compare_image_histgram(query_image, database_image,"CORREL")>2:
                  score += 1
                  break
-    if (score / len(key_frames1)) > 0.5: # 0.5 deh bal habad
-        print("hema win")
-        return database_video_path
-    else:
-         print("hema lose")
-         return None
+    result = score / len(key_frames1)
+    return result
 
 
 # if __name__ == "__main__" :

@@ -34,9 +34,8 @@ def retrive_Image(imageUrl):
                 Image_in_db = Load_from_Local(f"{path}{innerPath}{i[0]}")
                 if alg=='Histogram' :
                     result = compare_image_histgram(Image_to_compare, Image_in_db)
-                    if result is not None:
-                        #TODO: return similarity ratio
-                        retrieved_images.append({"Similarity":"","url":f"http://{host}:5000/static/images/{i[0]}"})
+                    if result >2:
+                        retrieved_images.append({"Similarity":result,"url":f"http://{host}:5000/static/images/{i[0]}"})
                 elif alg=='Mean':
                     result = image_comapare_mean(Image_to_compare, MeanDeSerial(i[3]))
                     if result <=50:

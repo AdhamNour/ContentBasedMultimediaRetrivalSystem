@@ -20,9 +20,9 @@ def retrive_Video(VideoUrl):
     Keyframes_to_Compare = save_temp_video(VideoUrl)
     for i in DB_videos:
         result = compare_keyframes(Keyframes_to_Compare, f"{keyPath}{i[0]}")
-        if result is not None:
+        if result>0.6:
             #TODO: return the Similarity ratio           
-            retrived_videos.append({"Similarity": "","url":i[1]})
+            retrived_videos.append({"Similarity": result,"url":i[1]})
     clear_temp()
     retrived_videos.sort(key=similarity, reverse=True)
     return retrived_videos

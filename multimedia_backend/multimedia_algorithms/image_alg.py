@@ -116,10 +116,7 @@ def compare_image_histgram(image_path1, image_path2, type_of_compare='correl'):
                 scoure += 1
         # print(diff)
     print(scoure)
-    if scoure > 2:
-        return image_path2
-    else:
-        return None
+    return scoure
 
 
 # function get string and return how many words are similarity
