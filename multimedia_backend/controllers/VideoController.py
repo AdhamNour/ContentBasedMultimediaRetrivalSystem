@@ -9,6 +9,9 @@ from multimedia_algorithms.vedio_keyframes import *
 path = "/media/dj/DJ/Senior College/2nd Term/Multimedia/Project/ContentBasedMultimediaRetrivalSystem/multimedia_backend/static/videos/"
 keyPath = '/media/dj/DJ/Senior College/2nd Term/Multimedia/Project/ContentBasedMultimediaRetrivalSystem/multimedia_backend/static/keyframes/'
 
+def similarity(ele):
+    return ele['Similarity']
+
 def retrive_Video(VideoUrl):
     retrived_videos =[]
     Videos = VideoClass.query.with_entities(VideoClass.keyFrame_location, VideoClass.url)
@@ -16,10 +19,12 @@ def retrive_Video(VideoUrl):
     save_video({"url": VideoUrl})
     Keyframes_to_Compare = save_temp_video(VideoUrl)
     for i in DB_videos:
-        if compare_keyframes(Keyframes_to_Compare, f"{keyPath}{i[0]}") is not None:           
-            retrived_videos.append(i[1])
-    #TODO: Empty Folders
+        result = compare_keyframes(Keyframes_to_Compare, f"{keyPath}{i[0]}")
+        if result is not None:
+            #TODO: return the Similarity ratio           
+            retrived_videos.append({"Similarity": "","url":i[1]})
     clear_temp()
+    retrived_videos.sort(key=similarity, reverse=True)
     return retrived_videos
 
 def save_video(Video):

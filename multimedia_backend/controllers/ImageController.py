@@ -13,6 +13,9 @@ path="/media/dj/DJ/Senior College/2nd Term/Multimedia/Project/ContentBasedMultim
 # innerPath='\\static\\images\\'
 innerPath='/static/images/'
 
+def similarity(ele):
+    return ele['Similarity']
+
 def retrive_Image(imageUrl):
     #get all images
     All_Images = ImageClass.query.with_entities(ImageClass.offline_location,ImageClass.image_id,\
@@ -29,18 +32,27 @@ def retrive_Image(imageUrl):
             for i in images:
                 print(i[0])
                 Image_in_db = Load_from_Local(f"{path}{innerPath}{i[0]}")
-                if alg=='Histogram' and compare_image_histgram(Image_to_compare, Image_in_db) is not None:
-                    retrieved_images.append(f"http://{host}:5000/static/images/{i[0]}")
-                elif alg=='Mean' and image_comapare_mean(Image_to_compare, MeanDeSerial(i[3]))<=50:
-                    retrieved_images.append(f"http://{host}:5000/static/images/{i[0]}")
-                elif alg=='GaborFilter' and Gabor_Method(Image_to_compare, GaborDeSerial(i[5]))>=50:
-                    retrieved_images.append(f"http://{host}:5000/static/images/{i[0]}")
+                if alg=='Histogram' :
+                    result = compare_image_histgram(Image_to_compare, Image_in_db)
+                    if result is not None:
+                        #TODO: return similarity ratio
+                        retrieved_images.append({"Similarity":"","url":f"http://{host}:5000/static/images/{i[0]}"})
+                elif alg=='Mean':
+                    result = image_comapare_mean(Image_to_compare, MeanDeSerial(i[3]))
+                    if result <=50:
+                        retrieved_images.append({"Similarity":100-result,"url":f"http://{host}:5000/static/images/{i[0]}"})
+                elif alg=='GaborFilter':
+                    result = Gabor_Method(Image_to_compare, GaborDeSerial(i[5]))
+                    if result >=50:
+                        retrieved_images.append({"Similarity":result ,"url":f"http://{host}:5000/static/images/{i[0]}"})
                 # TODO: Integrate the RESNET
                 elif alg=='RESNET':
                     DL = DeepLearning()
                     object_in_pic, percent = DL.predict_image(Image_to_compare)
-                    if object_in_pic==i[6] and abs(percent-i[7])<20:
-                        retrieved_images.append(f"http://{host}:5000/static/images/{i[0]}")
+                    result = abs(percent-i[7])
+                    if object_in_pic==i[6] and result<20:
+                        retrieved_images.append({"Similarity":100-result,"url":f"http://{host}:5000/static/images/{i[0]}"})
+    retrieved_images.sort(key=similarity, reverse=True)
     return retrieved_images
 
 def save_image(Image):
