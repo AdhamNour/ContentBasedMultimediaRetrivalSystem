@@ -23,7 +23,6 @@ class HomeScreen extends StatelessWidget {
           builder: (ctx) {
             final TextEditingController author, title, description;
             author = TextEditingController();
-            title = TextEditingController();
             description = TextEditingController();
             return AlertDialog(
               title: Text("Complete ${type} Data"),
@@ -39,14 +38,6 @@ class HomeScreen extends StatelessWidget {
                         decoration: InputDecoration(
                             border: OutlineInputBorder(), hintText: 'Author'),
                         controller: author,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(), hintText: 'Title'),
-                        controller: title,
                       ),
                     ),
                     Padding(
@@ -69,16 +60,11 @@ class HomeScreen extends StatelessWidget {
                       var request = http.MultipartRequest(
                           'POST',
                           Uri.parse(
-                              'http://192.168.1.9:5000/uploadBinaryImage'))
+                              'http://192.168.1.10:5000/uploadBinaryImage'))
                         ..fields.addAll({
-                          "Author": author.text,
-                          "Title": title.text,
-                          "Description": description.text
+                          "author": author.text,
+                          "description": description.text
                         });
-                      print(file.readAsBytesSync());
-                      print(http.MultipartFile.fromBytes(
-                              'content', file.readAsBytesSync())
-                          .toString());
                       request.files.add(http.MultipartFile.fromBytes(
                           'content', file.readAsBytesSync(),
                           filename: file.path.split('/').last));
@@ -114,14 +100,6 @@ class HomeScreen extends StatelessWidget {
                     VideoPreview(
                       urlController: urlController,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(), hintText: 'Author'),
-                        controller: author,
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -129,12 +107,11 @@ class HomeScreen extends StatelessWidget {
                 TextButton.icon(
                     onPressed: () {
                       Navigator.of(context).pop('ok');
-                      //TODO: Add the route here
-                      http.post(Uri.parse('http://192.168.1.9:5000'),
-                          body: jsonEncode({
-                            "Urlcontroll": urlController.text,
-                            "Author": author.text
-                          }));
+                      http.post(
+                          Uri.parse('http://192.168.1.10:5000/uploadVideo'),
+                          body: {
+                            "url": urlController.text
+                          });
                     },
                     icon: Icon(Icons.thumb_up),
                     label: Text('Okay'))

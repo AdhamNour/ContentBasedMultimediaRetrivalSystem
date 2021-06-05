@@ -12,7 +12,6 @@ class VideoClass(db.Model, Base):
     author = db.Column(db.String(80))
     description = db.Column(db.String(2000))
     no_of_keyframes = db.Column(db.Integer)
-    tags = db.Column(db.String(2000))
     length = db.Column(db.Integer)
     offline_location = db.Column(db.String(2000))
     keyFrame_location = db.Column(db.String(2000))
@@ -24,7 +23,6 @@ class VideoClass(db.Model, Base):
             "author": self.author,
             "description": self.description,
             "no_of_keyframes": self.no_of_keyframes,
-            "tags": self.tags,
             "length": self.length
         }
 

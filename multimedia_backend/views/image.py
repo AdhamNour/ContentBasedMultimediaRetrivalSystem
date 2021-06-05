@@ -41,10 +41,8 @@ class BinaryImageUpload(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('content', type=werkzeug.datastructures.FileStorage,location='files')
-        self.reqparse.add_argument('hello')
-        # self.reqparse.add_argument('author')
-        # self.reqparse.add_argument('title')
-        # self.reqparse.add_argument('description')
+        self.reqparse.add_argument('author')
+        self.reqparse.add_argument('description')
         
     def post(self):
         

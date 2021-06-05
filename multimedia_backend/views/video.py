@@ -1,7 +1,7 @@
 from errors import ErrorHandler
 from flask_restful import Resource,reqparse
 from controllers.VideoController import retrive_Video, save_video
-from flask import jsonify
+from flask import jsonify, request
 
 class VideoSearch(Resource):
     def __init__(self):
@@ -14,9 +14,9 @@ class VideoUpload(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('url')
-        self.reqparse.add_argument('author')
     
     def post(self):
+        print(request.args)
         args = self.reqparse.parse_args()
         try:
             save_video(args)

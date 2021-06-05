@@ -26,17 +26,21 @@ def save_video(Video):
     All_Videos = VideoClass.query.with_entities(VideoClass.url)
     Videos = [url for Video in All_Videos for url in Video]
     if Video['url'] not in Videos: 
+        print(Video)
         # Add Video to Database
         video = pytube.YouTube(Video['url'])
+        Video['author']=video.author
+        Video['description'] = video.description
         Video['title'] = video.title
         Video['length'] = video.length
         Video['no_of_keyframes'] = 15 
         download = video.streams.first()
         download.download(path)
         Video['offline_location'] = f"{download.default_filename}"
+        print(Video['offline_location'])
         # Add Keyframes
-        key_frame_extraction(f"{path}{Video['offline_location']}", f"{keyPath}{video.title}")
-        Video['keyFrame_location'] = f"{video.title}"
+        key_frame_extraction(f"{path}{Video['offline_location']}", f"{keyPath}{download.default_filename.split('.')[0]}")
+        Video['keyFrame_location'] = f"{download.default_filename.split('.')[0]}"
         v = VideoClass(**Video)
         try:
             v.insert()

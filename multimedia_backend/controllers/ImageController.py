@@ -6,13 +6,12 @@ from models.image import ImageClass
 from sqlalchemy.exc import SQLAlchemyError
 from multimedia_algorithms.image_alg import * 
 from models.config import host
-from io import StringIO
 import json
-from requests_toolbelt.multipart.decoder import MultipartDecoder
 
-path="D:\\Projects\\ContentBasedMultimediaRetrivalSystem\\multimedia_backend"
-#path="/media/dj/DJ/Senior College/2nd Term/Multimedia/Project/ContentBasedMultimediaRetrivalSystem/multimedia_backend"
-innerPath='\\static\\images\\'
+# path="D:\\Projects\\ContentBasedMultimediaRetrivalSystem\\multimedia_backend"
+path="/media/dj/DJ/Senior College/2nd Term/Multimedia/Project/ContentBasedMultimediaRetrivalSystem/multimedia_backend"
+# innerPath='\\static\\images\\'
+innerPath='/static/images/'
 
 def retrive_Image(imageUrl):
     #get all images
@@ -28,19 +27,20 @@ def retrive_Image(imageUrl):
     for alg in ['Histogram','Mean','GaborFilter','RESNET']:    
         if algorithms[alg]:
             for i in images:
-                Image_in_db = Load_from_Local(f"{path}{i[0]}")
+                print(i[0])
+                Image_in_db = Load_from_Local(f"{path}{innerPath}{i[0]}")
                 if alg=='Histogram' and compare_image_histgram(Image_to_compare, Image_in_db) is not None:
-                    retrieved_images.append(f"http://{host}:5000{i[0]}")
+                    retrieved_images.append(f"http://{host}:5000/static/images/{i[0]}")
                 elif alg=='Mean' and image_comapare_mean(Image_to_compare, MeanDeSerial(i[3]))<=50:
-                    retrieved_images.append(f"http://{host}:5000{i[0]}")
+                    retrieved_images.append(f"http://{host}:5000/static/images/{i[0]}")
                 elif alg=='GaborFilter' and Gabor_Method(Image_to_compare, GaborDeSerial(i[5]))>=50:
-                    retrieved_images.append(f"http://{host}:5000{i[0]}")
+                    retrieved_images.append(f"http://{host}:5000/static/images/{i[0]}")
                 # TODO: Integrate the RESNET
                 elif alg=='RESNET':
                     DL = DeepLearning()
                     object_in_pic, percent = DL.predict_image(Image_to_compare)
                     if object_in_pic==i[6] and abs(percent-i[7])<20:
-                        retrieved_images.append(f"http://{host}:5000{i[0]}")
+                        retrieved_images.append(f"http://{host}:5000/static/images/{i[0]}")
     return retrieved_images
 
 def save_image(Image):
@@ -74,7 +74,7 @@ def save_image(Image):
         gabor = G.gabor_histogram(imageLoad(im))
         Image['gabor'] = GaborSerial(gabor)
         # check if url is duplicate, then add to database
-        Image['offline_location']=f"{innerPath}{name}.png"
+        Image['offline_location']=f"{name}.png"
         newImage = ImageClass(**Image)
         try:
             newImage.insert()
@@ -94,13 +94,14 @@ def save_binary_image(I2):
         for Files in files:
             file_count += 1
     print(file_count, file_count+1)
-    name = f"Untitled_{file_count+1}"
-    print(os.path.splitext(I2['content'].filename)[0])
+    filename=I2['content'].filename.split('.')[0]
+    name = f"{filename}_{file_count+1}"
     # TODO:Image Preprocessing
     Image={}
-    
     Image['url']=''
-    Image['title']=os.path.splitext(I2['content'].filename)[0]
+    Image['title']=filename
+    Image['author']=I2['author']
+    Image['description']=I2['description']
     im = np.asarray(bytearray(I2['content'].read()), dtype="uint8")
     print(im.size)
     print(imageLoad(im).size)
@@ -121,7 +122,7 @@ def save_binary_image(I2):
     gabor = G.gabor_histogram(imageLoad(im))
     Image['gabor'] = GaborSerial(gabor)
     # check if url is duplicate, then add to database
-    Image['offline_location']=f"{innerPath}{name}.png"
+    Image['offline_location']=f"{name}.png"
     newImage = ImageClass(**Image)
     print("saving")
     try:

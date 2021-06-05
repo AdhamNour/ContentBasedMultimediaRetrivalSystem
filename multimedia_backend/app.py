@@ -17,7 +17,7 @@ api.add_resource(ImageSearch,'/Image')
 api.add_resource(ImageUpload,'/uploadImage')
 api.add_resource(BinaryImageUpload,'/uploadBinaryImage')
 api.add_resource(VideoUpload,'/uploadVideo')
-api.add_resource(Send, '/static/<Type>/<image>')
+api.add_resource(Send, '/static/images/<image>')
 
 from models.config import host
 if __name__ == '__main__':
