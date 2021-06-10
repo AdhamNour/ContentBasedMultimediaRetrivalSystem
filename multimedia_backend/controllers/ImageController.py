@@ -30,7 +30,7 @@ def retrive_Image(imageUrl):
     for alg in ['Histogram','Mean','GaborFilter','RESNET']:    
         if algorithms[alg]:
             for i in images:
-                url = i[3] if(i[3]!='') else f"http://{host}:5000/static/images/{i[0]}"
+                url = i[2] if(i[2]!='') else f"http://{host}:5000/static/images/{i[0]}"
                 Image_in_db = Load_from_Local(f"{path}{innerPath}{i[0]}")
                 if alg=='Histogram' :
                     result = compare_image_histgram(Image_to_compare, Image_in_db)
