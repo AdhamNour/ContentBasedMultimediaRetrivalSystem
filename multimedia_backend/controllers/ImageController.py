@@ -55,6 +55,7 @@ def retrive_Image(imageUrl):
                 DL = DeepLearning()
                 object_in_pic, percent = DL.predict_image(Image_to_compare)
                 for i in images:
+                    url = i[2] if(i[2]!='') else f"http://{host}:5000/static/images/{i[0]}"
                     result = abs(percent-i[7])
                     if object_in_pic==i[6] and result<20:
                         retrieved_images.append({"Similarity":100-result,"url":url})
