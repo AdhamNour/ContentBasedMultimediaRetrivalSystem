@@ -29,8 +29,10 @@ def Get_image_histogram(image_path):
     hist = []
     #image = mpimg.imread(image_path,cv2.IMREAD_COLOR)
     image = cv2.cvtColor(np.float32(image_path), cv2.COLOR_BGR2RGB)
+    dim =  image.shape
     for i in range(3):
         hist.append(cv2.calcHist([image], [i], None, [256], [0, 256]))
+        hist[i] = hist[i] / (dim[0] * dim[1])
     # plt.hist(image.ravel(),255,[0,256])
     return hist
 
