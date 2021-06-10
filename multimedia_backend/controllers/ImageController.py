@@ -8,10 +8,10 @@ from multimedia_algorithms.image_alg import *
 from models.config import host
 import json
 
-# path="D:\\Projects\\ContentBasedMultimediaRetrivalSystem\\multimedia_backend"
-path="/media/dj/DJ/Senior College/2nd Term/Multimedia/Project/ContentBasedMultimediaRetrivalSystem/multimedia_backend"
-# innerPath='\\static\\images\\'
-innerPath='/static/images/'
+path="D:\\Projects\\ContentBasedMultimediaRetrivalSystem\\multimedia_backend"
+#path="/media/dj/DJ/Senior College/2nd Term/Multimedia/Project/ContentBasedMultimediaRetrivalSystem/multimedia_backend"
+innerPath='\\static\\images\\'
+#innerPath='/static/images/'
 
 def similarity(ele):
     return ele['Similarity']

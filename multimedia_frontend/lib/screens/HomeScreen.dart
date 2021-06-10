@@ -59,7 +59,7 @@ class HomeScreen extends StatelessWidget {
                       var request = http.MultipartRequest(
                           'POST',
                           Uri.parse(
-                              'http://192.168.1.10:5000/uploadBinaryImage'))
+                              'http://192.168.1.9:5000/uploadBinaryImage'))
                         ..fields.addAll({
                           "author": author.text,
                           "description": description.text
@@ -107,7 +107,7 @@ class HomeScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.of(context).pop('ok');
                       http.post(
-                          Uri.parse('http://192.168.1.10:5000/uploadVideo'),
+                          Uri.parse('http://192.168.1.9:5000/uploadVideo'),
                           body: {
                             "url": urlController.text
                           });
