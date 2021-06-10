@@ -6,10 +6,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from numpy.lib.polynomial import RankWarning
-from keras.preprocessing.image import load_img
-from keras.preprocessing.image import img_to_array
-from keras.applications.resnet import preprocess_input, decode_predictions
-from keras.applications.resnet import ResNet152
+from tensorflow.keras.preprocessing.image import load_img
+from tensorflow.keras.preprocessing.image import img_to_array
+from tensorflow.keras.applications.resnet import preprocess_input ,decode_predictions
+from tensorflow.keras.applications.resnet import ResNet152
 from numpy.lib.utils import source
 from skimage.filters import gabor_kernel
 from skimage import color
@@ -166,40 +166,35 @@ def image_comapare_mean(image_path, mean_color_in_db):
     return average
 
 # khald section (3) , (4)
-
-
 class DeepLearning(object):
-    """docstring for DeepLearning"""
+	"""docstring for DeepLearning"""
+	def __init__(self):
+		super(DeepLearning, self).__init__()
+		self.model = ResNet152(weights='imagenet')
+		for k,v in self.model._get_trainable_state().items():
+			k.trainable = False
+		self.model.compile()
 
-    def __init__(self):
-        super(DeepLearning, self).__init__()
-        self.model = ResNet152(weights='imagenet')
-        for layer in self.model.layers:
-          layer.trainable = False
+	def predict_image(self,image):
+		if image.shape != (224,224,3):
+			image =  cv2.resize(image, dsize=(224, 224), interpolation=cv2.INTER_CUBIC)
+			print(image.shape)		
 
-    def predict_image(self, image):
-        if image.shape != (224, 224, 3):
-            image = cv2.resize(image, dsize=(224, 224),
-                               interpolation=cv2.INTER_CUBIC)
-            print(image.shape)
+		# convert the image pixels to a numpy array
+		image = img_to_array(image)
+		# reshape data for the model
+		image = np.expand_dims(image, axis=0)
+		# prepare the image for the VGG model
+		image = preprocess_input(image)
+		# predict the probability across all output classes
+		yhat = self.model.predict(image)
+		# convert the probabilities to class labels
+		label = decode_predictions(yhat)
 
-        # convert the image pixels to a numpy array
-        image = img_to_array(image)
-        # reshape data for the model
-        image = np.expand_dims(image, axis=0)
-        # prepare the image for the VGG model
-        image = preprocess_input(image)
-        # predict the probability across all output classes
-        yhat = self.model.predict(image)
-        # convert the probabilities to class labels
-        label = decode_predictions(yhat)
+		label_name =label[0][0][1]
+		label_percentage =label[0][0][2]*100
 
-        label_name = label[0][0][1]
-        label_percentage = label[0][0][2]*100
-
-        return label_name, label_percentage
-
-
+		return label_name,label_percentage
 class Gabor(object):
 
     def __init__(self):
