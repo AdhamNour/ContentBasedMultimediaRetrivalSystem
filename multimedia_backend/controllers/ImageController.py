@@ -30,27 +30,27 @@ def retrive_Image(imageUrl):
     for alg in ['Histogram','Mean','GaborFilter','RESNET']:    
         if algorithms[alg]:
             for i in images:
-                print(i[0])
+                url = i[3] if(i[3]!='') else f"http://{host}:5000/static/images/{i[0]}"
                 Image_in_db = Load_from_Local(f"{path}{innerPath}{i[0]}")
                 if alg=='Histogram' :
                     result = compare_image_histgram(Image_to_compare, Image_in_db)
                     if result >=2:
-                        retrieved_images.append({"Similarity":result,"url":f"http://{host}:5000/static/images/{i[0]}"})
+                        retrieved_images.append({"Similarity":result,"url":url})
                 elif alg=='Mean':
                     result = image_comapare_mean(Image_to_compare, MeanDeSerial(i[3]))
                     if result <=50:
-                        retrieved_images.append({"Similarity":100-result,"url":f"http://{host}:5000/static/images/{i[0]}"})
+                        retrieved_images.append({"Similarity":100-result,"url":url})
                 elif alg=='GaborFilter':
                     result = Gabor_Method(Image_to_compare, GaborDeSerial(i[5]))
                     if result >=50:
-                        retrieved_images.append({"Similarity":result ,"url":f"http://{host}:5000/static/images/{i[0]}"})
+                        retrieved_images.append({"Similarity":result ,"url":url})
                 # TODO: Integrate the RESNET
                 elif alg=='RESNET':
                     DL = DeepLearning()
                     object_in_pic, percent = DL.predict_image(Image_to_compare)
                     result = abs(percent-i[7])
                     if object_in_pic==i[6] and result<20:
-                        retrieved_images.append({"Similarity":100-result,"url":f"http://{host}:5000/static/images/{i[0]}"})
+                        retrieved_images.append({"Similarity":100-result,"url":url})
     retrieved_images.sort(key=similarity, reverse=True)
     return retrieved_images
 
