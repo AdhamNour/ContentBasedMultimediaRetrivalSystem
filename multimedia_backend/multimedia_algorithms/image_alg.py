@@ -100,11 +100,11 @@ def compare_image_histgram(image_path1, image_path2, type_of_compare='correl'):
     elif (type_of_compare == "distance" or type_of_compare == "DISTANCE"):
         compare_method = cv2.HISTCMP_BHATTACHARYYA
     diffs.append(cv2.compareHist(Get_image_histogram(image_path1)[
-                 0], Get_image_histogram(image_path2)[0], compare_method))
+                 0], image_path2[0], compare_method))
     diffs.append(cv2.compareHist(Get_image_histogram(image_path1)[
-                 1], Get_image_histogram(image_path2)[1], compare_method))
+                 1], image_path2[1], compare_method))
     diffs.append(cv2.compareHist(Get_image_histogram(image_path1)[
-                 2], Get_image_histogram(image_path2)[2], compare_method))
+                 2], image_path2[2], compare_method))
     print(diffs)
     for diff in diffs:
         if (compare_method == cv2.HISTCMP_CORREL):
@@ -157,11 +157,11 @@ def Get_image_mean_color(image_path):
 
 def image_comapare_mean(image_path, mean_color_in_db):
     diff = []
-    similar = Get_image_mean_color(image_path)
-    print(similar)
-    print(mean_color_in_db)
+    #similar = Get_image_mean_color(image_path)
+    #print(similar)
+    #print(mean_color_in_db)
     for i in range(3):
-        diff.append(abs(similar[i] - mean_color_in_db[i]))
+        diff.append(abs(image_path[i] - mean_color_in_db[i]))
     average = sum(diff) / 3
     return average
 
@@ -253,10 +253,10 @@ class Gabor(object):
 
     def compareHist(self, image1, image2):
 
-        hist1 = self.gabor_histogram(image1)
+        #hist1 = self.gabor_histogram(image1)
         hist2 = image2
         
-        return cv2.compareHist(hist1, hist2, cv2.HISTCMP_CORREL)
+        return cv2.compareHist(image1, hist2, cv2.HISTCMP_CORREL)
 
     def _gabor(self, image, kernels):
         accum = np.zeros_like(image)
