@@ -20,7 +20,6 @@ from multiprocessing.pool import ThreadPool
 
 
 
-
 # first fun to get histogeam from image Input : image , Output : histogram   (1)
 
 
@@ -98,12 +97,9 @@ def compare_image_histgram(image_path1, image_path2, type_of_compare='correl'):
     # return number from 0 to 1 inversive
     elif (type_of_compare == "distance" or type_of_compare == "DISTANCE"):
         compare_method = cv2.HISTCMP_BHATTACHARYYA
-    diffs.append(cv2.compareHist(Get_image_histogram(image_path1)[
-                 0], image_path2[0], compare_method))
-    diffs.append(cv2.compareHist(Get_image_histogram(image_path1)[
-                 1], image_path2[1], compare_method))
-    diffs.append(cv2.compareHist(Get_image_histogram(image_path1)[
-                 2], image_path2[2], compare_method))
+    diffs.append(cv2.compareHist(image_path1[0], image_path2[0], compare_method))
+    diffs.append(cv2.compareHist(image_path1[1], image_path2[1], compare_method))
+    diffs.append(cv2.compareHist(image_path1[2], image_path2[2], compare_method))
     print(diffs)
     for diff in diffs:
         if (compare_method == cv2.HISTCMP_CORREL):

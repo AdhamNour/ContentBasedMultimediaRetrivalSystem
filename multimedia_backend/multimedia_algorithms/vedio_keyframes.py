@@ -1,7 +1,7 @@
 from Katna.video import Video
 from Katna.writer import KeyFrameDiskWriter
 import os
-from multimedia_algorithms import image_alg 
+from multimedia_algorithms.image_alg import * 
 from controllers.ImageController import *
 
 # input vedio path , destination folder , no of key frames 
@@ -25,11 +25,13 @@ def compare_keyframes(query_video_path, database_video_path):
         file_name1 = query_key_frame.split('.')[0]
         query_image_path = (query_video_path)+'/'+str(file_name1)+'.jpeg'
         query_image = Load_from_Local(query_image_path)
+        query_image = Get_image_histogram(query_image)
         for database_key_frame in key_frames2:
             file_name2 = database_key_frame.split('.')[0]
             database_image_path = (database_video_path) + '/' + str(file_name2) + '.jpeg'
             database_image = Load_from_Local(database_image_path)
-            if image_alg.compare_image_histgram(query_image, database_image,"CORREL")>2:
+            database_image = Get_image_histogram(database_image)
+            if compare_image_histgram(query_image, database_image,"CORREL")>2:
                  score += 1
                  break
     result = score / len(key_frames1)
