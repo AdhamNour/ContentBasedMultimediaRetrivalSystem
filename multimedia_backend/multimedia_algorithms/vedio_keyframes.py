@@ -23,7 +23,7 @@ def compare_keyframes(query_video_path, database_video_path):
     score = 0
     for query_key_frame in key_frames1:
         file_name1 = query_key_frame.split('.')[0]
-        query_image_path = (query_video_path)+'/'+str(file_name1)+'.jpeg'
+        query_image_path = (query_video_path)+str(file_name1)+'.jpeg'
         query_image = Load_from_Local(query_image_path)
         query_image = Get_image_histogram(query_image)
         for database_key_frame in key_frames2:

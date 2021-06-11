@@ -16,12 +16,7 @@ from skimage import color
 import scipy.ndimage as ndi
 from multiprocessing.pool import ThreadPool
 
-# Necessary for processing local Images, and maybe the loaded ones too
-
-
-
 # first fun to get histogeam from image Input : image , Output : histogram   (1)
-
 
 def Get_image_histogram(image_path):
     hist = []
@@ -30,7 +25,7 @@ def Get_image_histogram(image_path):
     dim =  image.shape
     for i in range(3):
         hist.append(cv2.calcHist([image], [i], None, [256], [0, 256]))
-        hist[i] = hist[i] / (dim[0] * dim[1])
+        hist[i] = hist[i] / np.float32(dim[0] * dim[1])
     # plt.hist(image.ravel(),255,[0,256])
     return hist
 
