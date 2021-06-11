@@ -1,3 +1,7 @@
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
+import tensorflow as tf
+
 from views.send import Send
 from flask import Flask
 from flask_restful import Resource,Api,reqparse
