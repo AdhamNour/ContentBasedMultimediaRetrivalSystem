@@ -10,7 +10,7 @@ class VideoClass(db.Model, Base):
     url = db.Column(db.String(70))
     title = db.Column(db.String(80))
     author = db.Column(db.String(80))
-    description = db.Column(db.String(2000))
+    description = db.Column(db.Text)
     no_of_keyframes = db.Column(db.Integer)
     length = db.Column(db.Integer)
     offline_location = db.Column(db.String(2000))

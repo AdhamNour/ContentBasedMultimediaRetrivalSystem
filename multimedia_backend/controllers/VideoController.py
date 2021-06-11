@@ -6,8 +6,10 @@ from models.video import VideoClass
 from sqlalchemy.exc import SQLAlchemyError
 from multimedia_algorithms.vedio_keyframes import *
 
-path = "/media/dj/DJ/Senior College/2nd Term/Multimedia/Project/ContentBasedMultimediaRetrivalSystem/multimedia_backend/static/videos/"
-keyPath = '/media/dj/DJ/Senior College/2nd Term/Multimedia/Project/ContentBasedMultimediaRetrivalSystem/multimedia_backend/static/keyframes/'
+# path = "/media/dj/DJ/Senior College/2nd Term/Multimedia/Project/ContentBasedMultimediaRetrivalSystem/multimedia_backend/static/videos/"
+# keyPath = '/media/dj/DJ/Senior College/2nd Term/Multimedia/Project/ContentBasedMultimediaRetrivalSystem/multimedia_backend/static/keyframes/'
+path = "D:\\Projects\\ContentBasedMultimediaRetrivalSystem\\multimedia_backend\\static\\videos\\"
+keyPath = 'D:\\Projects\\ContentBasedMultimediaRetrivalSystem\\multimedia_backend\\static\\keyframes\\'
 
 def similarity(ele):
     return ele['Similarity']
