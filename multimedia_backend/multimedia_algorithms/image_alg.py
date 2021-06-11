@@ -19,8 +19,7 @@ from multiprocessing.pool import ThreadPool
 # Necessary for processing local Images, and maybe the loaded ones too
 
 
-def imageLoad(image):
-    return cv2.cvtColor(np.float32(image), cv2.COLOR_BGR2RGB)
+
 
 # first fun to get histogeam from image Input : image , Output : histogram   (1)
 

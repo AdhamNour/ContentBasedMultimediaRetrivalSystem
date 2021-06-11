@@ -24,13 +24,15 @@ def retrive_Image(imageUrl):
     images = [image for image in All_Images]  
     retrieved_images =[] 
     save_image({"url":imageUrl['link'], "title":"Untitled"})
-    Image_to_compare = np.asarray(bytearray(requests.get(imageUrl['link']).content), dtype="uint8")
-    Image_to_compare = imageLoad(Image_to_compare)
+    Image_to_compare = np.fromstring(requests.get(imageUrl['link']).content, np.uint8)
+    Image_to_compare = cv2.imdecode(Image_to_compare, cv2.IMREAD_COLOR)
     algorithms=json.loads(imageUrl['retreival_algorithms'])
     for alg in ['Histogram','Mean','GaborFilter','RESNET']:    
         if algorithms[alg]:
+            print("Comparing")
             if alg=='Histogram':
                 QHist = Get_image_histogram(Image_to_compare)
+                #rUN THE 
                 for i in images:
                     url = i[2] if(i[2]!='') else f"http://{host}:5000/static/images/{i[0]}"
                     result = compare_image_histgram(QHist, HistoDeSerial(i[4]))
@@ -73,24 +75,25 @@ def save_image(Image):
         response = requests.get(Image['url'])
         name = f"{Image['title']}_{file_count+1}"
         # TODO:Image Preprocessing
-        im = np.asarray(bytearray(response.content), dtype="uint8")
+        im = np.fromstring(requests.get(Image['url']).content, np.uint8)
+        im2 = cv2.imdecode(im, cv2.IMREAD_COLOR)
         print(im.size)
-        print(imageLoad(im).size)
+        print(im2.size)
         # First: Get the Histogram
-        hist = Get_image_histogram(imageLoad(im))
+        hist = Get_image_histogram(im2)
         Image['histogram']=HistoSerial(hist)
         # Second: Get the mean
-        mean = Get_image_mean_color(imageLoad(im))
+        mean = Get_image_mean_color(im2)
         Image['mean'] = MeanSerial(mean)
         # Third: Get the Object
         DL = DeepLearning()
-        object_in_image, percent = DL.predict_image(imageLoad(im))
+        object_in_image, percent = DL.predict_image(im2)
         Image['object_in_pic'] = object_in_image
         print(object_in_image, float(percent))
         Image['percent'] = float(percent)
         # Forth: Get the Gabor
         G = Gabor()
-        gabor = G.gabor_histogram(imageLoad(im))
+        gabor = G.gabor_histogram(im2)
         Image['gabor'] = GaborSerial(gabor)
         # check if url is duplicate, then add to database
         Image['offline_location']=f"{name}.png"
@@ -121,24 +124,25 @@ def save_binary_image(I2):
     Image['title']=filename
     Image['author']=I2['author']
     Image['description']=I2['description']
-    im = np.asarray(bytearray(I2['content'].read()), dtype="uint8")
+    im = np.fromstring(I2['content'].read(), np.uint8)
+    im2 = cv2.imdecode(im, cv2.IMREAD_COLOR)
     print(im.size)
-    print(imageLoad(im).size)
+    print(im2.size)
     # First: Get the Histogram
-    hist = Get_image_histogram(imageLoad(im))
+    hist = Get_image_histogram(im2)
     Image['histogram']=HistoSerial(hist)
     # Second: Get the mean
-    mean = Get_image_mean_color(imageLoad(im))
+    mean = Get_image_mean_color(im2)
     Image['mean'] = MeanSerial(mean)
     # Third: Get the Object
     DL = DeepLearning()
-    object_in_image, percent = DL.predict_image(imageLoad(im))
+    object_in_image, percent = DL.predict_image(im2)
     Image['object_in_pic'] = object_in_image
     print(object_in_image, float(percent))
     Image['percent'] = float(percent)
     # Forth: Get the Gabor
     G = Gabor()
-    gabor = G.gabor_histogram(imageLoad(im))
+    gabor = G.gabor_histogram(im2)
     Image['gabor'] = GaborSerial(gabor)
     # check if url is duplicate, then add to database
     Image['offline_location']=f"{name}.png"
@@ -161,8 +165,9 @@ def save_binary_image(I2):
 def Load_from_Local(URL):
     Image_in_db = open(URL,'rb')
     Image_in_db = Image_in_db.read()
-    Image_in_db = np.asarray(bytearray(Image_in_db), dtype='uint8')
-    Image_in_db = imageLoad(Image_in_db)
+    Image_in_db = np.fromstring(Image_in_db, np.uint8)
+    Image_in_db = cv2.imdecode(Image_in_db, cv2.IMREAD_COLOR)
     return Image_in_db
+
 
 # save_image({"url":"https://i.ytimg.com/vi/sC-dEuejKHk/maxresdefault.jpg", "title":"Spider-Man"})
